@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.DS_Store
+# simulation outputs
+*_traj.pdb
+*_traj_energy.csv
+outputs/
+# transfer bundle used to sync code into this folder
+.vh_sync*

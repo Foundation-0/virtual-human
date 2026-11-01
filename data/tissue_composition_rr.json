@@ -1,0 +1,27 @@
+{
+  "_provenance": [
+    "Tissue composition for the Rodgers & Rowland partition method (Rodgers, Leahy & Rowland 2005, J Pharm Sci 94:1259; Rodgers & Rowland 2006, J Pharm Sci 95:1238).",
+    "Fractional volumes (f_nl neutral lipid, f_np neutral phospholipid, f_ew extracellular water, f_iw intracellular water) and tissue:plasma albumin/lipoprotein ratios: rat composition corrected for residual blood, applied to human as in Rodgers & Rowland 2007, transcribed from Coutinho et al. 2024 Table III (open access, CC BY 4.0). Adipose f_nl/f_np use the corrected (non-swapped) order.",
+    "Acidic phospholipids (ap, mg/g) and erythrocyte composition: transcribed from the Huisinga et al. 2012 supplement (GenericPBPKmodel_physiology.m), citing Rodgers, Leahy & Rowland 2005 and Rodgers & Rowland 2007 Table VII; pancreas ap uses the gut value (no source).",
+    "pH values and the vegetable oil:water relation for adipose (log Pvo = 1.115 log P - 1.35): Yau et al. 2020.",
+    "Values copied from the provenance-annotated compilation in matthiaskoenig/pkpdsim (src/pkpdsim/pbpk/data/tissue_composition.toml, commit bc9ef0c); none re-verified against the 2005/2006 originals, which are paywalled."
+  ],
+  "plasma": {"f_nl": 0.0023, "f_np": 0.0013, "ph": 7.4},
+  "intracellular": {"ph": 7.0},
+  "erythrocytes": {"f_iw": 0.63, "f_nl": 0.0033, "f_np": 0.0012, "ap": 0.5, "ph": 7.22},
+  "adipose": {"vo_slope": 1.115, "vo_intercept": -1.35},
+  "tissues": {
+    "adipose":  {"f_nl": 0.853,  "f_np": 0.0016, "f_ew": 0.135, "f_iw": 0.017, "albumin": 0.049, "lipoprotein": 0.068, "ap": 0.40},
+    "bone":     {"f_nl": 0.0174, "f_np": 0.0016, "f_ew": 0.100, "f_iw": 0.346, "albumin": 0.100, "lipoprotein": 0.050, "ap": 0.67},
+    "brain":    {"f_nl": 0.0391, "f_np": 0.0015, "f_ew": 0.162, "f_iw": 0.620, "albumin": 0.048, "lipoprotein": 0.041, "ap": 0.40},
+    "gut":      {"f_nl": 0.0375, "f_np": 0.0124, "f_ew": 0.282, "f_iw": 0.475, "albumin": 0.158, "lipoprotein": 0.141, "ap": 2.41},
+    "heart":    {"f_nl": 0.0135, "f_np": 0.0106, "f_ew": 0.320, "f_iw": 0.456, "albumin": 0.157, "lipoprotein": 0.160, "ap": 2.25},
+    "kidney":   {"f_nl": 0.0121, "f_np": 0.0240, "f_ew": 0.273, "f_iw": 0.483, "albumin": 0.130, "lipoprotein": 0.137, "ap": 5.03},
+    "liver":    {"f_nl": 0.0135, "f_np": 0.0238, "f_ew": 0.161, "f_iw": 0.573, "albumin": 0.086, "lipoprotein": 0.161, "ap": 4.56},
+    "lung":     {"f_nl": 0.0215, "f_np": 0.0123, "f_ew": 0.336, "f_iw": 0.446, "albumin": 0.212, "lipoprotein": 0.168, "ap": 3.91},
+    "muscle":   {"f_nl": 0.0100, "f_np": 0.0072, "f_ew": 0.118, "f_iw": 0.630, "albumin": 0.064, "lipoprotein": 0.059, "ap": 1.53},
+    "pancreas": {"f_nl": 0.0403, "f_np": 0.0090, "f_ew": 0.120, "f_iw": 0.664, "albumin": 0.060, "lipoprotein": 0.060, "ap": 2.41},
+    "skin":     {"f_nl": 0.0603, "f_np": 0.0044, "f_ew": 0.382, "f_iw": 0.291, "albumin": 0.277, "lipoprotein": 0.096, "ap": 1.32},
+    "spleen":   {"f_nl": 0.0071, "f_np": 0.0107, "f_ew": 0.207, "f_iw": 0.579, "albumin": 0.097, "lipoprotein": 0.207, "ap": 3.18}
+  }
+}

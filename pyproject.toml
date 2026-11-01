@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "virtual-human"
+version = "0.1.0"
+description = "Multi-scale virtual human: from-scratch atomistic engine (JAX) + whole-body physiology, coupled."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=1.26",
+  "scipy>=1.11",
+  "jax>=0.4.30",
+]
+
+[project.optional-dependencies]
+# structure preparation (parameter assignment) and the independent referee used in tests
+prep = ["openmm>=8.1", "pdbfixer>=1.9"]
+dev = ["pytest>=8", "matplotlib>=3.8", "openmm>=8.1", "pdbfixer>=1.9"]
+
+[tool.setuptools.packages.find]
+include = ["vh*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
