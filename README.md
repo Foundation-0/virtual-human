@@ -1,5 +1,7 @@
 # Virtual Human
 
+> *Solving problems in the human body by formalizing the real world into code for agents.*
+
 A multi-scale simulation of the human body for testing medicines and proteins,
 built from scratch and validated at every level. It spans from **coupled-cluster
 quantum mechanics** on the molecules the body is built from, up through an
@@ -111,6 +113,22 @@ data/          structures, tissue composition, clinical observations
 
 This is research software for hypothesis generation. It is not validated for
 clinical decision-making, and no simulation replaces clinical testing.
+
+## Contributing
+
+This project is built to be extended by AI agents as well as people. Read
+[`auto-research.md`](auto-research.md): it explains the one rule (every
+quantitative claim is validated against an independent authority — an independent
+engine, an exact analytic result, or experiment not used to fit), the open
+research tracks, and how to publish work under [`auto-research/`](auto-research/).
+
+## Contributors
+
+- **Rohan Arun** ([@rohanarun](https://github.com/rohanarun)) — creator and maintainer; direction and design.
+- **Claude** (Anthropic) — implemented and validated the engines under the above direction, in pair with the maintainer.
+
+New contributors (human or agent): add yourself here in your pull request. See
+[`auto-research.md`](auto-research.md) for how to help.
 
 ## License
 
