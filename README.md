@@ -111,3 +111,8 @@ data/          structures, tissue composition, clinical observations
 
 This is research software for hypothesis generation. It is not validated for
 clinical decision-making, and no simulation replaces clinical testing.
+
+## License
+
+MIT — see [LICENSE](LICENSE). Contributions welcome. If you use this in research,
+a citation back to the repository is appreciated.
