@@ -59,6 +59,8 @@ class DerivedParams:
     fa: float
     fg: float
     vss_l: float
+    q_gut_l_h: float = 0.0       # Qgut model "flow" term
+    clint_gut_l_h: float = 0.0   # enterocyte intrinsic clearance
     sources: dict = field(default_factory=dict)
 
     @property
@@ -114,7 +116,7 @@ class PBPKModel:
             ) * overrides.get("clint_scale", 1.0)
             fg = q_gut / (q_gut + clint_gut)
         else:
-            ka, fg = 0.0, 1.0
+            ka, fg, q_gut, clint_gut = 0.0, 1.0, 0.0, 0.0
         fg = overrides.get("fg", fg)
         kt = N_TRANSIT / SI_TRANSIT_H
         fa = 1.0 - (1.0 + ka / kt) ** (-N_TRANSIT) if ka > 0 else 0.0
@@ -122,7 +124,8 @@ class PBPKModel:
         v = ind.volumes
         vss = float(sum(kp[t] * v[t] for t in TISSUES) + (ind.v_arterial + ind.v_venous) * bp)
         self.p = DerivedParams(kp=kp, bp=bp, fu=fu, clint_hep_l_h=clint, cl_hep_blood_l_h=cl_h_blood,
-                               cl_renal_l_h=cl_r, ka_h=ka, fa=fa, fg=fg, vss_l=vss)
+                               cl_renal_l_h=cl_r, ka_h=ka, fa=fa, fg=fg, vss_l=vss,
+                               q_gut_l_h=q_gut, clint_gut_l_h=clint_gut)
         self._build_matrix(kt)
 
     # ------------------------------------------------------------------------

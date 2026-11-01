@@ -149,8 +149,8 @@ def system_from_openmm(omm_system, topology, name: str = "system") -> MolecularS
             out["torsion_phase"] = np.array([r[5].value_in_unit(unit.radian) for r in rows])
             out["torsion_k"] = np.array([r[6].value_in_unit(unit.kilojoule_per_mole) for r in rows])
         elif isinstance(force, mm.NonbondedForce):
-            if force.getNonbondedMethod() != mm.NonbondedForce.NoCutoff:
-                raise NotImplementedError("only NoCutoff nonbonded systems are supported in v0.1")
+            if force.getNonbondedMethod() not in (mm.NonbondedForce.NoCutoff, mm.NonbondedForce.Ewald, mm.NonbondedForce.PME):
+                raise NotImplementedError("supported nonbonded methods: NoCutoff (implicit), Ewald / PME (explicit)")
             p = [force.getParticleParameters(i) for i in range(N)]
             out["charges"] = np.array([x[0].value_in_unit(unit.elementary_charge) for x in p])
             out["sigma"] = np.array([x[1].value_in_unit(unit.nanometer) for x in p])
@@ -196,12 +196,66 @@ def system_from_openmm(omm_system, topology, name: str = "system") -> MolecularS
         residue_ids=[int(a.residue.index) for a in atoms],
         name=name,
     )
+
+    # explicit solvent: periodic box, constraints, molecule membership
+    if omm_system.usesPeriodicBoundaryConditions():
+        bv = omm_system.getDefaultPeriodicBoxVectors()
+        box = np.array([bv[i][i].value_in_unit(unit.nanometer) for i in range(3)])
+        off = [bv[i][j].value_in_unit(unit.nanometer) for i in range(3) for j in range(3) if i != j]
+        if np.max(np.abs(off)) > 1e-12:
+            raise NotImplementedError("only orthorhombic boxes are supported")
+        out["box"] = box
+    nc = omm_system.getNumConstraints()
+    if nc:
+        rows = [omm_system.getConstraintParameters(i) for i in range(nc)]
+        out["constraints"] = np.array([[r[0], r[1]] for r in rows], dtype=np.int64)
+        out["constraint_dist"] = np.array([r[2].value_in_unit(unit.nanometer) for r in rows])
+    # molecules = connected components of bonds + constraints + exceptions
+    parent = list(range(N))
+
+    def find(a):
+        while parent[a] != a:
+            parent[a] = parent[parent[a]]
+            a = parent[a]
+        return a
+
+    links = [out.get("bonds", np.zeros((0, 2), int)), out.get("exceptions", np.zeros((0, 2), int))]
+    if nc:
+        links.append(out["constraints"])
+    for arr in links:
+        for a, b in np.asarray(arr).reshape(-1, 2):
+            ra, rb = find(int(a)), find(int(b))
+            if ra != rb:
+                parent[ra] = rb
+    roots = {}
+    out["molecule_ids"] = np.array([roots.setdefault(find(i), len(roots)) for i in range(N)], dtype=np.int64)
     for key in ("torsions", "angles", "bonds"):
         out.setdefault(key, np.zeros((0, {"bonds": 2, "angles": 3, "torsions": 4}[key]), dtype=np.int64))
     out.setdefault("torsion_n", np.zeros(0, dtype=np.int64))
     for key in ("bond_k", "bond_r0", "angle_k", "angle_t0", "torsion_k", "torsion_phase"):
         out.setdefault(key, np.zeros(0))
     return MolecularSystem(**out)
+
+
+def water_box(box_nm: float = 1.9, cutoff_nm: float = 0.9, model: str = "tip3p", ewald_tol: float = 5e-6):
+    """A cubic box of rigid water, parameterized by OpenMM's ForceField and copied
+    into a MolecularSystem. Returns (system, positions nm, topology, openmm System).
+
+    The OpenMM System (Ewald electrostatics, rigid water, dispersion correction)
+    is returned so tests can use it as an independent referee.
+    """
+    _require_openmm()
+    import openmm as mm
+    from openmm import app, unit
+
+    ff = app.ForceField("amber14-all.xml", f"amber14/{model}.xml")
+    mod = app.Modeller(app.Topology(), [])
+    mod.addSolvent(ff, boxSize=mm.Vec3(box_nm, box_nm, box_nm) * unit.nanometer, model=model)
+    omm_system = ff.createSystem(mod.topology, nonbondedMethod=app.Ewald, nonbondedCutoff=cutoff_nm * unit.nanometer,
+                                 rigidWater=True, ewaldErrorTolerance=ewald_tol, removeCMMotion=False)
+    pos = np.array(mod.positions.value_in_unit(unit.nanometer), dtype=np.float64)
+    system = system_from_openmm(omm_system, mod.topology, name=f"{model} water box")
+    return system, pos, mod.topology, omm_system
 
 
 def load_protein(path: str | Path, ph: float = 7.0, name: str | None = None):

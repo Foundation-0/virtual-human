@@ -51,6 +51,11 @@ class MolecularSystem:
     # recorded so the engine reproduces whichever variant was parameterized.
     gb_coulomb_constant: float = 138.935485
     gb_engulfed_correction: bool = False
+    # --- explicit solvent ------------------------------------------------------
+    box: np.ndarray | None = None              # (3,) nm, orthorhombic periodic box
+    constraints: np.ndarray | None = None      # (Nc, 2) int, fixed-distance pairs (rigid water)
+    constraint_dist: np.ndarray | None = None  # (Nc,) nm
+    molecule_ids: np.ndarray | None = None     # (N,) int, molecule each atom belongs to
     # --- labels (for output only) ------------------------------------------
     elements: list = field(default_factory=list)
     atom_names: list = field(default_factory=list)
@@ -87,9 +92,17 @@ class MolecularSystem:
             out[f.name] = v.tolist() if isinstance(v, np.ndarray) else v
         return out
 
+    @property
+    def is_periodic(self) -> bool:
+        return self.box is not None
+
+    @property
+    def n_molecules(self) -> int:
+        return 0 if self.molecule_ids is None else int(np.max(self.molecule_ids)) + 1
+
     @classmethod
     def from_dict(cls, d: dict) -> "MolecularSystem":
-        int_fields = {"bonds", "angles", "torsions", "exceptions", "torsion_n"}
+        int_fields = {"bonds", "angles", "torsions", "exceptions", "torsion_n", "constraints", "molecule_ids"}
         kw = {}
         for f in fields(cls):
             if f.name not in d:

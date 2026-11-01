@@ -1,0 +1,301 @@
+<title>Virtual Human</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: an instrument console. Masthead with the time-scale ruler, two live
+   consoles side by side (atoms on a dark scope screen | the body as a PBPK
+   circulation diagram), then the evidence. Stacks to one column on phones. */
+:root {
+  --bg: #EEF1F6;
+  --panel: #FFFFFF;
+  --ink: #131A2B;
+  --muted: #586379;
+  --line: #D6DCE6;
+  --accent: #2B44C4;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #E3E8FB;
+  --drug: #C2373A;
+  --signal: #B26A12;
+  --scope: #0B1120;
+  --scope-ink: #C9D3EA;
+  --scope-line: rgba(160, 176, 210, 0.55);
+  --font-display: "IBM Plex Sans Condensed", "Arial Narrow", "Roboto Condensed", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-data: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0A0F1C; --panel: #111A2D; --ink: #E5EAF4; --muted: #96A3BC; --line: #25314B;
+    --accent: #8FA2FF; --accent-ink: #0A0F1C; --accent-soft: #1B2546; --drug: #FF6B6E; --signal: #F0AE4A;
+    --scope: #060A14; --scope-ink: #C9D3EA; --scope-line: rgba(160, 176, 210, 0.5);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0A0F1C; --panel: #111A2D; --ink: #E5EAF4; --muted: #96A3BC; --line: #25314B;
+  --accent: #8FA2FF; --accent-ink: #0A0F1C; --accent-soft: #1B2546; --drug: #FF6B6E; --signal: #F0AE4A;
+  --scope: #060A14; --scope-ink: #C9D3EA; --scope-line: rgba(160, 176, 210, 0.5);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
+.page {
+  max-width: 1360px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 40px;
+  display: grid; gap: 18px;
+}
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; letter-spacing: 0.005em; }
+p { margin: 0; }
+.mono, .num { font-family: var(--font-data); font-variant-numeric: tabular-nums; }
+
+/* masthead */
+.masthead { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 24px; align-items: end; }
+.masthead h1 { font-size: clamp(30px, 4.2vw, 46px); font-weight: 700; line-height: 1.02; }
+.masthead h1 .ver { font-family: var(--font-data); font-size: 0.36em; font-weight: 500; color: var(--muted); vertical-align: 0.9em; margin-left: 6px; }
+.thesis { margin-top: 10px; max-width: 62ch; color: var(--muted); font-size: 16px; }
+.ruler { display: grid; gap: 6px; }
+.ruler-label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.ruler-track { position: relative; height: 46px; border-top: 1px solid var(--line); }
+.ruler-track .tick { position: absolute; top: 0; transform: translateX(-50%); font-family: var(--font-data); font-size: 11px; color: var(--muted); padding-top: 18px; white-space: nowrap; }
+.ruler-track .tick::before { content: ""; position: absolute; left: 50%; top: 0; height: 8px; border-left: 1px solid var(--muted); }
+.ruler-band { position: absolute; top: -5px; height: 9px; border-radius: 5px; }
+.ruler-band.atoms { background: var(--accent); }
+.ruler-band.body { background: var(--drug); }
+.ruler-key { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+.ruler-key span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; background: var(--k); }
+
+/* consoles */
+.consoles { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); gap: 18px; align-items: start; }
+.console { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; display: grid; gap: 14px; min-width: 0; }
+.console-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.console-head h2 { font-size: 24px; font-weight: 600; }
+.console-head p { color: var(--muted); font-size: 13.5px; max-width: 46ch; margin-top: 2px; }
+.eyebrow { font-family: var(--font-data); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.console.body-console .eyebrow { color: var(--drug); }
+
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; flex-wrap: wrap; }
+.seg button { border: 0; background: transparent; color: var(--ink); font: 500 13px var(--font-body); padding: 7px 11px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.scope { position: relative; background: var(--scope); border-radius: 8px; overflow: hidden; aspect-ratio: 4 / 3; max-width: 100%; touch-action: none; cursor: grab; }
+.scope:active { cursor: grabbing; }
+.scope canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.scope-hud { position: absolute; left: 12px; top: 10px; right: 12px; display: flex; justify-content: space-between; gap: 8px; pointer-events: none; color: var(--scope-ink); font-family: var(--font-data); font-size: 12px; }
+.scope-hud .live::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #4ADE80; margin-right: 6px; vertical-align: 1px; }
+.scope-hud .live.paused::before { background: #94A3B8; }
+.scope-hint { position: absolute; left: 12px; bottom: 10px; color: var(--scope-ink); opacity: 0.7; font-size: 12px; pointer-events: none; }
+
+.controls { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
+.btn { border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 8px; padding: 7px 12px; font: 500 13px var(--font-body); cursor: pointer; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.dose { border-color: var(--drug); color: var(--drug); background: transparent; }
+.btn.dose:hover { background: var(--drug); color: var(--panel); }
+.field { display: grid; gap: 4px; min-width: 0; }
+.field label, .field .label { font-size: 12px; color: var(--muted); }
+.field .row { display: flex; align-items: center; gap: 10px; }
+.field output { font-family: var(--font-data); font-size: 13px; min-width: 7ch; white-space: nowrap; text-align: right; font-variant-numeric: tabular-nums; }
+input[type="range"] { accent-color: var(--accent); width: 100%; min-width: 120px; }
+select { font: 14px var(--font-body); color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; max-width: 100%; }
+.check { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; color: var(--muted); }
+
+.readouts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.readout { background: var(--panel); padding: 8px 10px; display: grid; gap: 1px; min-width: 0; }
+.readout .k { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
+.readout .v { font-family: var(--font-data); font-size: 17px; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.readout .v small { font-size: 11px; color: var(--muted); margin-left: 3px; }
+.spark { width: 100%; height: 70px; display: block; }
+
+.body-grid { display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr); gap: 12px; }
+.body-map { width: 100%; aspect-ratio: 5 / 6; display: block; max-width: 100%; }
+.charts { display: grid; gap: 6px; align-content: start; min-width: 0; }
+.chart { width: 100%; height: 190px; display: block; }
+.chart.small { height: 112px; }
+.legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+.legend span::before { content: ""; display: inline-block; width: 14px; height: 3px; border-radius: 2px; margin-right: 6px; vertical-align: 3px; background: var(--k); }
+.legend span.pt::before { width: 7px; height: 7px; border-radius: 50%; vertical-align: 1px; }
+.bridge { border-top: 1px dashed var(--line); padding-top: 12px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px 18px; }
+.bridge .note { grid-column: 1 / -1; font-size: 12.5px; color: var(--muted); }
+.summary { font-size: 12.5px; color: var(--muted); font-family: var(--font-data); line-height: 1.6; }
+
+/* evidence */
+.evidence { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.9fr); gap: 18px; }
+.ev { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.ev h3 { font-size: 19px; font-weight: 600; }
+.ev p { font-size: 13.5px; color: var(--muted); max-width: 62ch; }
+.ev dl { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 7px 12px; font-size: 13.5px; }
+.ev dt { color: var(--ink); }
+.ev dd { margin: 0; font-family: var(--font-data); font-variant-numeric: tabular-nums; text-align: right; }
+.ev dd.good { color: var(--accent); }
+footer { color: var(--muted); font-size: 12.5px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-top: 1px solid var(--line); padding-top: 12px; }
+footer a { color: var(--accent); }
+
+@media (max-width: 1080px) {
+  .consoles, .evidence { grid-template-columns: minmax(0, 1fr); }
+  .masthead { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 560px) {
+  .body-grid { grid-template-columns: minmax(0, 1fr); }
+  .bridge { grid-template-columns: minmax(0, 1fr); }
+  .readouts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .scope { aspect-ratio: 1 / 1; }
+}
+</style>
+
+<div class="page">
+  <header class="masthead">
+    <div>
+      <h1>Virtual Human <span class="ver">v0.1</span></h1>
+      <p class="thesis">A human simulator built from scratch at two scales: atoms where molecules decide the outcome, organs where the body does. Both engines below are running live in this page, using the same physics as the validated Python engines.</p>
+    </div>
+    <div class="ruler" aria-label="Time scales covered by each engine">
+      <div class="ruler-label">Time each engine simulates</div>
+      <div class="ruler-track" id="ruler"></div>
+      <div class="ruler-key"><span style="--k: var(--accent)">Atoms: femtosecond steps</span><span style="--k: var(--drug)">Body: minutes to days</span></div>
+    </div>
+  </header>
+
+  <main class="consoles">
+    <section class="console" aria-labelledby="atoms-title">
+      <div class="console-head">
+        <div>
+          <div class="eyebrow">vh.molecular · AMBER ff14SB + GB-OBC2 water</div>
+          <h2 id="atoms-title">Atoms</h2>
+          <p>Every atom of a small protein in water, moving under real force-field physics, one femtosecond per step.</p>
+        </div>
+        <div class="seg" role="group" aria-label="Protein">
+          <button type="button" id="sys-chignolin" aria-pressed="true">Chignolin · 138 atoms</button>
+          <button type="button" id="sys-trpcage" aria-pressed="false">Trp-cage · 304 atoms</button>
+        </div>
+      </div>
+      <div class="scope" id="scope">
+        <canvas id="mol" aria-label="Live 3D view of the protein"></canvas>
+        <div class="scope-hud"><span class="live" id="live">LIVE</span><span id="hud-time">0.00 ps</span></div>
+        <div class="scope-hint">Drag to rotate · scroll to zoom</div>
+      </div>
+      <div class="controls">
+        <button type="button" class="btn primary" id="mol-play">Pause</button>
+        <button type="button" class="btn" id="mol-reset">Restart from structure</button>
+        <div class="field" style="flex: 1 1 220px">
+          <label for="temp">Temperature (body is 310 K)</label>
+          <div class="row"><input type="range" id="temp" min="250" max="650" step="5" value="310"><output id="temp-out" for="temp">310 K</output></div>
+        </div>
+        <label class="check"><input type="checkbox" id="show-h" checked> Hydrogens</label>
+      </div>
+      <div class="readouts" aria-live="off">
+        <div class="readout"><span class="k">Simulated</span><span class="v" id="r-time">–</span></div>
+        <div class="readout"><span class="k">Speed</span><span class="v" id="r-speed">–</span></div>
+        <div class="readout"><span class="k">Temperature</span><span class="v" id="r-temp">–</span></div>
+        <div class="readout"><span class="k">Potential energy</span><span class="v" id="r-energy">–</span></div>
+        <div class="readout"><span class="k">Radius of gyration</span><span class="v" id="r-rg">–</span></div>
+        <div class="readout"><span class="k">Native contacts</span><span class="v" id="r-q">–</span></div>
+      </div>
+      <div>
+        <div class="legend"><span style="--k: var(--accent)">Native contacts kept (folded = 100%)</span></div>
+        <canvas class="spark" id="qchart" aria-label="Native contacts over simulated time"></canvas>
+      </div>
+    </section>
+
+    <section class="console body-console" aria-labelledby="body-title">
+      <div class="console-head">
+        <div>
+          <div class="eyebrow">vh.body · whole-body PBPK · midazolam</div>
+          <h2 id="body-title">Body</h2>
+          <p>A virtual patient: 13 organs joined by blood flow. Give a dose and watch the drug spread, get cleared, and reach its brain receptor.</p>
+        </div>
+        <div class="field">
+          <label for="patient">Patient</label>
+          <select id="patient"></select>
+        </div>
+      </div>
+      <div class="body-grid">
+        <canvas class="body-map" id="bodymap" aria-label="Organ concentrations on the circulation diagram"></canvas>
+        <div class="charts">
+          <div class="legend"><span style="--k: var(--drug)">Plasma (ng/mL, log)</span><span class="pt" style="--k: var(--ink)" id="obs-legend">Clinical data</span></div>
+          <canvas class="chart" id="pkchart" aria-label="Plasma concentration over time"></canvas>
+          <div class="legend"><span style="--k: var(--signal)">GABA-A receptors occupied (%)</span></div>
+          <canvas class="chart small" id="occchart" aria-label="Receptor occupancy over time"></canvas>
+        </div>
+      </div>
+      <div class="controls">
+        <button type="button" class="btn dose" id="dose-iv">Give 2 mg IV</button>
+        <button type="button" class="btn dose" id="dose-po">Give 7.5 mg by mouth</button>
+        <button type="button" class="btn dose" id="dose-po15">Give 15 mg by mouth</button>
+        <div class="seg" role="group" aria-label="Simulation speed">
+          <button type="button" data-speed="0.25" aria-pressed="false">15 min/s</button>
+          <button type="button" data-speed="1" aria-pressed="true">1 h/s</button>
+          <button type="button" data-speed="4" aria-pressed="false">4 h/s</button>
+        </div>
+        <button type="button" class="btn" id="body-play">Pause</button>
+      </div>
+      <div class="controls">
+        <div class="field" style="flex: 1 1 260px">
+          <label for="study">Replay a clinical study (reference man, real patient data overlaid)</label>
+          <select id="study"></select>
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="readout"><span class="k">Time after first dose</span><span class="v" id="b-time">–</span></div>
+        <div class="readout"><span class="k">Plasma</span><span class="v" id="b-plasma">–</span></div>
+        <div class="readout"><span class="k">Brain, unbound</span><span class="v" id="b-brain">–</span></div>
+        <div class="readout"><span class="k">Receptors occupied</span><span class="v" id="b-occ">–</span></div>
+        <div class="readout"><span class="k">Given</span><span class="v" id="b-given">–</span></div>
+        <div class="readout"><span class="k">Cleared so far</span><span class="v" id="b-cleared">–</span></div>
+      </div>
+      <div class="bridge">
+        <div class="field">
+          <label for="kd">Binding to the receptor, Kd (from the molecular layer)</label>
+          <div class="row"><input type="range" id="kd" min="-1" max="2" step="0.01" value="0.255"><output id="kd-out" for="kd">1.8 nM</output></div>
+          <span class="label mono" id="dg-out">ΔG –</span>
+        </div>
+        <div class="field">
+          <label for="cyp">Liver and gut CYP3A4 activity (drug interactions)</label>
+          <div class="row"><input type="range" id="cyp" min="-1" max="0.477" step="0.01" value="0"><output id="cyp-out" for="cyp">1.0×</output></div>
+          <span class="label" id="cyp-label">Normal</span>
+        </div>
+        <p class="note">Kd is the hand-off point between scales: Kd = e<sup>ΔG/RT</sup>, and ΔG is what an atom-level binding free-energy calculation produces. Today it's the measured value for midazolam (1.8 nM). The CYP3A4 slider stands in for an inhibitor (left) or an inducer (right).</p>
+      </div>
+      <p class="summary" id="model-summary"></p>
+    </section>
+  </main>
+
+  <section class="evidence" aria-label="How accurate it is">
+    <div class="ev">
+      <div class="eyebrow">Evidence · atoms</div>
+      <h3>Same physics as the reference engine</h3>
+      <p>The engine is our own code. OpenMM, the standard reference engine, was used only to check it, on two real proteins.</p>
+      <dl id="ev-mol"></dl>
+    </div>
+    <div class="ev">
+      <div class="eyebrow" style="color: var(--drug)">Evidence · body</div>
+      <h3>Checked against real patients</h3>
+      <p>Midazolam concentration curves from published clinical studies, digitized by the Open Systems Pharmacology project. The 2-fold band is the usual acceptance bar for these models.</p>
+      <dl id="ev-body"></dl>
+    </div>
+    <div class="ev">
+      <div class="eyebrow" style="color: var(--muted)">Why two scales</div>
+      <h3>Every atom of a body is out of reach</h3>
+      <p>All-atom simulation of a whole person, for one second, at 2 fs per step:</p>
+      <dl>
+        <dt>Atoms in a body</dt><dd>7 × 10²⁷</dd>
+        <dt>Steps per simulated second</dt><dd>5 × 10¹⁴</dd>
+        <dt>Operations needed</dt><dd>≳ 10⁴⁵</dd>
+        <dt>Fastest supercomputer</dt><dd>~2 × 10¹⁸/s</dd>
+        <dt>Time to finish</dt><dd>~6 × 10¹⁹ years</dd>
+      </dl>
+    </div>
+  </section>
+
+  <footer>
+    <span>Code: <a href="https://github.com/rohanarun/virtual-human" target="_blank" rel="noopener">github.com/rohanarun/virtual-human</a> (private) · validation reports in <span class="mono">docs/</span></span>
+    <span>Research software. Not a medical device.</span>
+  </footer>
+</div>
+<!--SCRIPTS-->

@@ -1,0 +1,499 @@
+{
+ "name": "pbpk:midazolam",
+ "nodes": [
+  {
+   "id": "arterial",
+   "type": "blood",
+   "scale": "organism",
+   "attrs": {
+    "volume": 1.325
+   },
+   "label": "arterial blood"
+  },
+  {
+   "id": "venous",
+   "type": "blood",
+   "scale": "organism",
+   "attrs": {
+    "volume": 3.9749999999999996
+   },
+   "label": "venous blood"
+  },
+  {
+   "id": "eliminated",
+   "type": "sink",
+   "scale": "organism",
+   "attrs": {},
+   "label": "eliminated"
+  },
+  {
+   "id": "gut_lumen",
+   "type": "lumen",
+   "scale": "organism",
+   "attrs": {},
+   "label": "gut lumen (oral dose)"
+  },
+  {
+   "id": "lung",
+   "type": "compartment",
+   "scale": "organ",
+   "attrs": {
+    "volume": 0.5,
+    "kp": 0.7575776381893871,
+    "flow": 390.0
+   },
+   "label": "lung"
+  },
+  {
+   "id": "heart",
+   "type": "compartment",
+   "scale": "organ",
+   "attrs": {
+    "volume": 0.33,
+    "kp": 0.5543702858165431,
+    "flow": 15.6
+   },
+   "label": "heart"
+  },
+  {
+   "id": "brain",
+   "type": "compartment",
+   "scale": "organ",
+   "attrs": {
+    "volume": 1.45,
+    "kp": 0.9729669343541709,
+    "flow": 46.8
+   },
+   "label": "brain"
+  },
+  {
+   "id": "muscle",
+   "type": "compartment",
+   "scale": "organ",
+   "attrs": {
+    "volume": 29.0,
+    "kp": 0.35832561487381903,
+    "flow": 66.3
+   },
+   "label": "muscle"
+  },
+  {
+   "id": "adipose",
+   "type": "compartment",
+   "scale": "organ",
+   "attrs": {
+    "volume": 18.2,
+    "kp": 1.9550643053194905,
+    "flow": 19.5
+   },
+   "label": "adipose"
+  },
+  {
+   "id": "skin",
+   "type": "compartment",
+   "scale": "organ",
+   "attrs": {
+    "volume": 3.3,
+    "kp": 1.5263040291073704,
+    "flow": 19.5
+   },
+   "label": "skin"
+  },
+  {
+   "id": "bone",
+   "type": "compartment",
+   "scale": "organ",
+   "attrs": {
+    "volume": 10.5,
+    "kp": 0.47147408134646995,
+    "flow": 19.5
+   },
+   "label": "bone"
+  },
+  {
+   "id": "kidney",
+   "type": "compartment",
+   "scale": "organ",
+   "attrs": {
+    "volume": 0.31,
+    "kp": 0.5935042666201106,
+    "flow": 74.1
+   },
+   "label": "kidney"
+  },
+  {
+   "id": "liver",
+   "type": "compartment",
+   "scale": "organ",
+   "attrs": {
+    "volume": 1.8,
+    "kp": 0.6456631725164685,
+    "flow": 25.35
+   },
+   "label": "liver"
+  },
+  {
+   "id": "gut",
+   "type": "compartment",
+   "scale": "organ",
+   "attrs": {
+    "volume": 1.17,
+    "kp": 1.101135989748967,
+    "flow": 58.5
+   },
+   "label": "gut"
+  },
+  {
+   "id": "spleen",
+   "type": "compartment",
+   "scale": "organ",
+   "attrs": {
+    "volume": 0.15,
+    "kp": 0.4511271832304625,
+    "flow": 11.7
+   },
+   "label": "spleen"
+  },
+  {
+   "id": "pancreas",
+   "type": "compartment",
+   "scale": "organ",
+   "attrs": {
+    "volume": 0.14,
+    "kp": 1.069900452891875,
+    "flow": 3.9
+   },
+   "label": "pancreas"
+  },
+  {
+   "id": "rest",
+   "type": "compartment",
+   "scale": "organ",
+   "attrs": {
+    "volume": 1.46,
+    "kp": 0.35832561487381903,
+    "flow": 29.25
+   },
+   "label": "rest"
+  },
+  {
+   "id": "target",
+   "type": "target",
+   "scale": "molecule",
+   "attrs": {
+    "kd_nm": 1.8,
+    "tissue": "brain"
+   },
+   "label": "GABA-A receptor (benzodiazepine site, GABRG2)"
+  }
+ ],
+ "edges": [
+  {
+   "src": "venous",
+   "dst": "lung",
+   "type": "flow",
+   "directed": true,
+   "attrs": {
+    "flow": 390.0
+   },
+   "model": "pbpk.flow"
+  },
+  {
+   "src": "lung",
+   "dst": "arterial",
+   "type": "flow",
+   "directed": true,
+   "attrs": {
+    "flow": 390.0
+   },
+   "model": "pbpk.flow"
+  },
+  {
+   "src": "arterial",
+   "dst": "heart",
+   "type": "flow",
+   "directed": true,
+   "attrs": {
+    "flow": 15.6
+   },
+   "model": "pbpk.flow"
+  },
+  {
+   "src": "heart",
+   "dst": "venous",
+   "type": "flow",
+   "directed": true,
+   "attrs": {
+    "flow": 15.6
+   },
+   "model": "pbpk.flow"
+  },
+  {
+   "src": "arterial",
+   "dst": "brain",
+   "type": "flow",
+   "directed": true,
+   "attrs": {
+    "flow": 46.8
+   },
+   "model": "pbpk.flow"
+  },
+  {
+   "src": "brain",
+   "dst": "venous",
+   "type": "flow",
+   "directed": true,
+   "attrs": {
+    "flow": 46.8
+   },
+   "model": "pbpk.flow"
+  },
+  {
+   "src": "arterial",
+   "dst": "muscle",
+   "type": "flow",
+   "directed": true,
+   "attrs": {
+    "flow": 66.3
+   },
+   "model": "pbpk.flow"
+  },
+  {
+   "src": "muscle",
+   "dst": "venous",
+   "type": "flow",
+   "directed": true,
+   "attrs": {
+    "flow": 66.3
+   },
+   "model": "pbpk.flow"
+  },
+  {
+   "src": "arterial",
+   "dst": "adipose",
+   "type": "flow",
+   "directed": true,
+   "attrs": {
+    "flow": 19.5
+   },
+   "model": "pbpk.flow"
+  },
+  {
+   "src": "adipose",
+   "dst": "venous",
+   "type": "flow",
+   "directed": true,
+   "attrs": {
+    "flow": 19.5
+   },
+   "model": "pbpk.flow"
+  },
+  {
+   "src": "arterial",
+   "dst": "skin",
+   "type": "flow",
+   "directed": true,
+   "attrs": {
+    "flow": 19.5
+   },
+   "model": "pbpk.flow"
+  },
+  {
+   "src": "skin",
+   "dst": "venous",
+   "type": "flow",
+   "directed": true,
+   "attrs": {
+    "flow": 19.5
+   },
+   "model": "pbpk.flow"
+  },
+  {
+   "src": "arterial",
+   "dst": "bone",
+   "type": "flow",
+   "directed": true,
+   "attrs": {
+    "flow": 19.5
+   },
+   "model": "pbpk.flow"
+  },
+  {
+   "src": "bone",
+   "dst": "venous",
+   "type": "flow",
+   "directed": true,
+   "attrs": {
+    "flow": 19.5
+   },
+   "model": "pbpk.flow"
+  },
+  {
+   "src": "arterial",
+   "dst": "kidney",
+   "type": "flow",
+   "directed": true,
+   "attrs": {
+    "flow": 74.1
+   },
+   "model": "pbpk.flow"
+  },
+  {
+   "src": "kidney",
+   "dst": "venous",
+   "type": "flow",
+   "directed": true,
+   "attrs": {
+    "flow": 74.1
+   },
+   "model": "pbpk.flow"
+  },
+  {
+   "src": "arterial",
+   "dst": "liver",
+   "type": "flow",
+   "directed": true,
+   "attrs": {
+    "flow": 25.35
+   },
+   "model": "pbpk.flow"
+  },
+  {
+   "src": "arterial",
+   "dst": "gut",
+   "type": "flow",
+   "directed": true,
+   "attrs": {
+    "flow": 58.5
+   },
+   "model": "pbpk.flow"
+  },
+  {
+   "src": "gut",
+   "dst": "liver",
+   "type": "flow",
+   "directed": true,
+   "attrs": {
+    "flow": 58.5,
+    "route": "portal"
+   },
+   "model": "pbpk.flow"
+  },
+  {
+   "src": "arterial",
+   "dst": "spleen",
+   "type": "flow",
+   "directed": true,
+   "attrs": {
+    "flow": 11.7
+   },
+   "model": "pbpk.flow"
+  },
+  {
+   "src": "spleen",
+   "dst": "liver",
+   "type": "flow",
+   "directed": true,
+   "attrs": {
+    "flow": 11.7,
+    "route": "portal"
+   },
+   "model": "pbpk.flow"
+  },
+  {
+   "src": "arterial",
+   "dst": "pancreas",
+   "type": "flow",
+   "directed": true,
+   "attrs": {
+    "flow": 3.9
+   },
+   "model": "pbpk.flow"
+  },
+  {
+   "src": "pancreas",
+   "dst": "liver",
+   "type": "flow",
+   "directed": true,
+   "attrs": {
+    "flow": 3.9,
+    "route": "portal"
+   },
+   "model": "pbpk.flow"
+  },
+  {
+   "src": "arterial",
+   "dst": "rest",
+   "type": "flow",
+   "directed": true,
+   "attrs": {
+    "flow": 29.25
+   },
+   "model": "pbpk.flow"
+  },
+  {
+   "src": "rest",
+   "dst": "venous",
+   "type": "flow",
+   "directed": true,
+   "attrs": {
+    "flow": 29.25
+   },
+   "model": "pbpk.flow"
+  },
+  {
+   "src": "liver",
+   "dst": "venous",
+   "type": "flow",
+   "directed": true,
+   "attrs": {
+    "flow": 99.45000000000002
+   },
+   "model": "pbpk.flow"
+  },
+  {
+   "src": "liver",
+   "dst": "eliminated",
+   "type": "clears",
+   "directed": true,
+   "attrs": {
+    "cl": 28.244519572405274,
+    "organ": "liver"
+   },
+   "model": "pbpk.hepatic"
+  },
+  {
+   "src": "kidney",
+   "dst": "eliminated",
+   "type": "clears",
+   "directed": true,
+   "attrs": {
+    "cl": 0.24373314965518464,
+    "organ": "kidney"
+   },
+   "model": "pbpk.renal"
+  },
+  {
+   "src": "gut_lumen",
+   "dst": "gut",
+   "type": "absorbs",
+   "directed": true,
+   "attrs": {
+    "fa": 0.982374560767999,
+    "fg": 0.4866506773053105,
+    "ka": 1.645714285714286
+   },
+   "model": "pbpk.absorption"
+  },
+  {
+   "src": "brain",
+   "dst": "target",
+   "type": "binds",
+   "directed": true,
+   "attrs": {
+    "kd_nm": 1.8
+   },
+   "model": "bridge.occupancy"
+  }
+ ]
+}

@@ -1,0 +1,82 @@
+{
+ "_reference_values": {
+  "water_rOH": {
+   "value": 0.9572,
+   "unit": "A",
+   "source": "experiment, Benedict 1956 (r_e)"
+  },
+  "water_angle": {
+   "value": 104.52,
+   "unit": "deg",
+   "source": "experiment, Benedict 1956 (r_e)"
+  },
+  "water_dipole": {
+   "value": 1.855,
+   "unit": "D",
+   "source": "experiment, Clough 1973 (gas-phase)"
+  },
+  "dimer_De": {
+   "value": -5.0,
+   "unit": "kcal/mol",
+   "source": "CCSD(T)/CBS benchmark, Tschumper 2002 / Klopper 2000 (electronic De ~ -4.99 to -5.02)"
+  },
+  "peptide_CN": {
+   "value": 1.36,
+   "unit": "A",
+   "source": "typical peptide-bond C-N length (between C-N single ~1.47 and C=N double ~1.28)"
+  },
+  "formamide_barrier": {
+   "value": [
+    16.0,
+    19.0
+   ],
+   "unit": "kcal/mol",
+   "source": "formamide C-N rotation barrier, experiment/high-level ~16-19"
+  }
+ },
+ "water": {
+  "rOH": 0.9575459057824814,
+  "angle": 103.66177025732283,
+  "dipole_hf": 1.9967682879410082,
+  "dipole_ccsd": 1.8648857999758828,
+  "level_geom": "MP2/cc-pVTZ",
+  "level_dipole": "CCSD/aug-cc-pVTZ",
+  "seconds": 11.89291524887085
+ },
+ "dimer": {
+  "components_kcal": {
+   "mp2/cc-pvtz": {
+    "hf": -3.5560297764899795,
+    "corr": -0.9020413141470758
+   },
+   "mp2/cc-pvqz": {
+    "hf": -3.5764206161106267,
+    "corr": -1.1718489272116668
+   },
+   "ccsd(t)/cc-pvtz": {
+    "hf": -3.556029776695081,
+    "corr": -0.8126312007971708
+   }
+  },
+  "e_mp2_cbs_kcal": -4.94515617988294,
+  "delta_ccsdt_mp2_tz_kcal": 0.089410113349905,
+  "e_ccsdt_cbs_kcal": -4.855746066533036,
+  "scheme": "focal-point: MP2/CBS(T,Q) + [CCSD(T)-MP2]/cc-pVTZ, counterpoise-corrected",
+  "seconds": 275.3989214897156
+ },
+ "peptide": {
+  "cn_length": 1.3529742735576804,
+  "improper_deg": 179.99999999998536,
+  "barrier_kcal": 12.171903293807588,
+  "level": "MP2/cc-pVTZ geometry; barrier MP2/cc-pVTZ//cc-pVDZ",
+  "seconds": 257.1994159221649
+ },
+ "glycine": {
+  "cc_bond": 1.5147256501088286,
+  "c_n_bond": 1.4631226365663887,
+  "co_double": 1.2127458491285024,
+  "co_single": 1.3592522876427415,
+  "level": "MP2/cc-pVDZ",
+  "seconds": 177.75299429893494
+ }
+}

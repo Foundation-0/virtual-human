@@ -39,6 +39,37 @@ def block_se(x, n_blocks=10):
     return float(means.std(ddof=1) / np.sqrt(n_blocks))
 
 
+def benchmark(systems):
+    bench = []
+    for label, (s, p, _, _) in systems.items():
+        for prec, dtype in (("double", jnp.float64), ("single", jnp.float32)):
+            m = build_energy_model(s, dtype=dtype)
+            lg = LangevinBAOAB(m, dt=0.001, temperature=300.0)
+            st = lg.init_state(p, T=300.0)
+            st = lg.run(st, 5)
+            st.x.block_until_ready()
+            t = time.time()
+            st = lg.run(st, 2000)
+            st.x.block_until_ready()
+            sps = 2000 / (time.time() - t)
+            bench.append({"system": label, "n_atoms": s.n_atoms, "precision": prec, "steps_per_s": sps, "ns_per_day_1fs": sps * 86400 / 1e6})
+            print(f"[speed] {label} {prec}: {sps:.0f} steps/s = {sps * 86400 / 1e6:.1f} ns/day")
+    return bench
+
+
+def bench_only():
+    """Re-measure speed on an otherwise idle machine and rewrite the report."""
+    report = json.loads((DOCS / "validation_molecular.json").read_text())
+    systems = {}
+    for label, pdb in PROTEINS.items():
+        system, pos, _, omm = load_protein(DATA / pdb)
+        systems[label] = (system, pos, omm, None)
+    report["benchmark"] = benchmark(systems)
+    (DOCS / "validation_molecular.json").write_text(json.dumps(report, indent=2))
+    write_markdown(report)
+    print("rewrote docs/validation_molecular.{json,md}")
+
+
 def main():
     report = {"meta": {
         "date": time.strftime("%Y-%m-%d"), "python": platform.python_version(), "jax": jax.__version__,
@@ -130,20 +161,7 @@ def main():
     report["nvt_openmm"] = omm_rows
 
     # 5. speed ----------------------------------------------------------------
-    bench = []
-    for label, (s, p, _, _) in systems.items():
-        for prec, dtype in (("double", jnp.float64), ("single", jnp.float32)):
-            m = build_energy_model(s, dtype=dtype)
-            lg = LangevinBAOAB(m, dt=0.001, temperature=300.0)
-            st = lg.init_state(p, T=300.0)
-            st = lg.run(st, 5)
-            t = time.time()
-            st = lg.run(st, 1000)
-            st.x.block_until_ready()
-            sps = 1000 / (time.time() - t)
-            bench.append({"system": label, "n_atoms": s.n_atoms, "precision": prec, "steps_per_s": sps, "ns_per_day_1fs": sps * 86400 / 1e6})
-            print(f"[speed] {label} {prec}: {sps:.0f} steps/s = {sps * 86400 / 1e6:.1f} ns/day")
-    report["benchmark"] = bench
+    report["benchmark"] = benchmark(systems)
 
     DOCS.mkdir(exist_ok=True)
     (DOCS / "validation_molecular.json").write_text(json.dumps(report, indent=2))
@@ -182,9 +200,12 @@ def write_markdown(r):
         L.append(f"| ours (BAOAB) | {n['dt_fs']} | {n['mean_T']:.1f} ± {n['se_T']:.1f} | {n['std_T']:.1f} | {n['theory_std_T']:.1f} | {n['mean_U']:.1f} ± {n['se_U']:.1f} |")
     for n in r["nvt_openmm"]:
         L.append(f"| OpenMM LangevinMiddle | {n['dt_fs']} | {n['mean_T']:.1f} ± {n['se_T']:.1f} | | | {n['mean_U']:.1f} ± {n['se_U']:.1f} |")
-    L += ["", "Kinetic temperature measured at full steps is biased slightly low for BAOAB at larger time steps "
-          "(a known property of the scheme; configurational sampling is unaffected). The bias shrinks as the "
-          "time step shrinks, which the table shows. Error bars are block-averaged standard errors.", "",
+    L += ["", "Mean potential energy (a configurational average) agrees between the two engines within error bars, "
+          "and does not drift with the time step: BAOAB samples configurations accurately even at 2 fs. "
+          "Our kinetic temperature is read from full-step velocities, which BAOAB biases slightly low as the time "
+          "step grows (a known property of the scheme); OpenMM's LangevinMiddle reports a half-step estimator, "
+          "which is why it reads 300 K at 1 fs. The bias vanishes as the step shrinks (0.5 fs row). "
+          "Error bars are block-averaged standard errors.", "",
           "## 5. Speed", "", "| System | Atoms | Precision | Steps/s | ns/day at 1 fs |", "|---|---|---|---|---|"]
     for b in r["benchmark"]:
         L.append(f"| {b['system']} | {b['n_atoms']} | {b['precision']} | {b['steps_per_s']:.0f} | {b['ns_per_day_1fs']:.1f} |")
@@ -194,4 +215,6 @@ def write_markdown(r):
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+
+    bench_only() if "--bench-only" in sys.argv else main()
