@@ -8,6 +8,12 @@ quantum mechanics** on the molecules the body is built from, up through an
 **atom-level physics engine** for proteins and drugs, to a **whole-body engine**
 that predicts what a drug does in a person — with a **real-time browser demo**.
 
+<p align="center">
+  <img src="docs/img/atom_viewer.png" width="460" alt="Browser viewer: the Trp-cage protein simulated atom by atom in real time">
+</p>
+
+> The Trp-cage protein, every atom moving under real force-field physics, **live in the browser** — drag to rotate, heat it, watch native contacts and energy update each step. This is the from-scratch engine (ported to JavaScript and checked against the Python engine to 1e-12) running in real time; the full demo also drives a virtual patient. See [`web/`](web/).
+
 > Status: under active development. Every accuracy claim below is backed by a test
 > or a validation report in `docs/`, checked against an independent engine, an
 > exact analytic result, or experiment.
@@ -61,6 +67,45 @@ faster than real time.
 The explicit-solvent engine (`vh.molecular.periodic`, `.constraints`, `.explicit_md`) adds rung 3 of the accuracy ladder: every water molecule, exact long-range electrostatics (Ewald / smooth PME), rigid-water SHAKE/RATTLE and a Monte-Carlo barostat — validated term-by-term against OpenMM Ewald (energy to 1e-13, PME to 1e-11, constraints to 1e-16).
 
 See [`docs/accuracy_ladder.md`](docs/accuracy_ladder.md) for the full five-rung ladder and what each rung is validated against.
+
+## Formalizing the body as a graph
+
+**Can we solve problems with code by formalizing the body as a graph?** Yes — for
+the structural/relational class of problems — and `vh.graph` proves it. The honest
+boundary (in [`docs/graph_formalization.md`](docs/graph_formalization.md)): a graph
+solves *where / what-connects / how-much-flows / is-it-consistent*; it does **not**
+solve *how-strong / how-fast / how-it-folds* — that stays physics. The real win is a
+**typed graph that is also executable**: every edge carries the validated model
+behind it, so the graph wires the scales together and lets any part be verified
+alone.
+
+The body is already a graph at every scale — organs joined by blood flow, atoms
+joined by bonds. Formalized from the real, validated engines:
+
+<p align="center">
+  <img src="docs/img/pbpk_graph.png" width="760" alt="The whole-body model as a flow graph of organs">
+</p>
+
+Graph algorithms (all written from scratch) then give exact answers:
+
+<p align="center">
+  <img src="docs/img/graph_results.png" width="820" alt="Blood delivered to each organ and the structural hubs, from graph algorithms">
+</p>
+
+| Question | Algorithm | Result on the real model |
+|---|---|---|
+| Is it physically consistent? | flow balance (Kirchhoff) | blood conserved at every node to **1.5×10⁻¹⁶** |
+| Where can an IV drug reach? | reachability (BFS/DFS) | all 14 compartments, incl. brain |
+| What does an oral drug hit first? | path enumeration | `gut → liver` before systemic — **first-pass metabolism from topology** |
+| Does anything recirculate? | strongly-connected components | one loop spanning 15 compartments (systemic circulation) |
+| Where are the hubs? | betweenness centrality | arterial, venous, lung |
+| **Verify a part in isolation** | subgraph extraction | elimination subgraph clearance = full model **exactly (28.488 L/h)** |
+| **The graph verifying the engine** | BFS on the bond graph | reproduces the force field's **1687 exclusion pairs exactly** (symmetric difference 0) |
+
+That last row is the sharpest: a pure topological fact (atoms within bond-distance ≤ 3)
+and the physics engine's own nonbonded bookkeeping check each other. Render any
+subgraph to a diagram with `vh.graph.render`; reproduce all of the above with
+`python scripts/validate_graph.py`.
 
 ## Quick start
 
