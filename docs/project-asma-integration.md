@@ -183,3 +183,27 @@ Verification for this increment: **153 Python tests passed with no skips** in
 against both checked-in and regenerated fixtures, with worst plasma-profile
 relative error 4.8e-13 over 48 points. Regenerated molecular fixtures were not
 retained. This is numerical software verification, not biological validation.
+
+## 2026-11-05 update: kinetic invariants and paraneoplastic antigen exposure
+
+Project Asma's [exposure and observability record](https://github.com/Foundation-0/project-asma/blob/main/docs/research/paraneoplastic-exposure-observability.md)
+asks what irreversible immune-mediated neural injury records about a tumor's
+antigen over time. Its exact result is that final neural survival depends on a
+schedule only through antigen exposure, so treatment order can change neural
+outcome while the tumor endpoint cannot. Which order minimizes exposure depends
+on whether antigen is presented in proportion to living burden or released by
+cells killed in the body.
+
+The reusable library change is `kinetic_invariant_basis()` and
+`kinetic_residuals()` in `vh.graph.reactions`. They find conserved quantities
+that depend on rate values, which turns integral identities into exact checks.
+The same finder recovers the clearance identity (amount eliminated equals rate
+times AUC) behind the earlier clearance-reference work. The fork-specific
+experiment is [`scripts/validate_paraneoplastic_exposure.py`](../scripts/validate_paraneoplastic_exposure.py),
+with its [report](../auto-research/2026-11-05-E-paraneoplastic-exposure/report.md).
+Its optional bridge compares 28 exposure and release values with Asma's exact
+rational module, using a trusted local checkout as before.
+
+All rates, burdens and units are invented. No patient data, anti-Yo mechanism,
+neurofilament-light validity or treatment benefit enters the library, the
+experiment or the bridge.
