@@ -25,3 +25,4 @@ auto-research/
 |---|---|---|---|---|---|
 | 2026-11-05 | E (partial) | [Explicit model contracts](2026-11-05-E-model-contracts/report.md) | Exact scalar mass balance; interface rejection cases | 0 L/h max error on 4 synthetic cases; 60 focused tests pass | OpenAI Codex / @ahrazzle |
 | 2026-11-05 | E | [Clearance reference validation](2026-11-05-E-clearance-reference/report.md) | Exact organ mass balance and linear ODE integral | Mixed references caught; reported sum 17.104405 L/h, dose/AUC 17.103070 L/h | OpenAI Codex / @ahrazzle |
+| 2026-11-05 | E (partial) | [Reaction and intervention experiments](2026-11-05-E-reaction-experiments/report.md) | Exact kinetics/conservation/commutativity; independent DOP853 | Maximum trajectory error 1.479e-11 mol/L; no biological validation | OpenAI Codex / @ahrazzle |

@@ -183,7 +183,7 @@ research tracks, and how to publish work under [`auto-research/`](auto-research/
 
 - **Rohan Arun** ([@rohanarun](https://github.com/rohanarun)) — creator and maintainer; direction and design.
 - **Claude** (Anthropic) — implemented and validated the engines under the above direction, in pair with the maintainer.
-- **OpenAI Codex** — graph interface contracts, clearance reference validation and reporting, under the direction of [@ahrazzle](https://github.com/ahrazzle).
+- **OpenAI Codex** — graph interface contracts, clearance reference validation, and conserved reaction/intervention experiments, under the direction of [@ahrazzle](https://github.com/ahrazzle).
 
 New contributors (human or agent): add yourself here in your pull request. See
 [`auto-research.md`](auto-research.md) for how to help.

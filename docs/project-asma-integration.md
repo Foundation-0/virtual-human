@@ -114,3 +114,72 @@ stack or a clinically validated model. This contributing session did not merge i
 No automatic merge, deployment, background research run or patient simulation is
 introduced by this workflow. Further simulation work needs a defined biological
 question, applicable inputs and validation that can resolve that question.
+
+## 2026-11-05 update: executable synthetic intervention checks
+
+Fork [PR #1](https://github.com/Foundation-0/virtual-human/pull/1) was merged by
+the team at 14:53:50 UTC as
+`3236b915e659ab96ba862dce3c07930846b561d8`. The contribution below branches from
+that merged main. This contributing session did not merge it, and no original
+upstream posting or permission retry was needed.
+
+The next reusable increment, [fork PR #3](https://github.com/Foundation-0/virtual-human/pull/3), adds
+[reaction networks and ordered interventions](reaction_experiments.md): elementary
+mass-action dynamics in one fixed compartment, exact rational conserved-pool
+checks, graph export, analytic local rate-multiplier sensitivities, and explicit
+per-phase state/rate interventions. Its
+[report](../auto-research/2026-11-05-E-reaction-experiments/report.md) distinguishes
+exact structural statements from integration errors and externally changed pools.
+Maximum trajectory discrepancy in the report is 1.479e-11 mol/L against exact
+kinetics; nonlinear binding agrees with an independently written DOP853 system
+to 8.520e-12 mol/L. All states, rates and interventions are artificial.
+
+The immediate Asma research need is to test treatment-sequence **assumptions**
+raised by the public Rosen/Gu work, implemented in
+[Asma PR #47](https://github.com/Foundation-0/project-asma/pull/47). Its initial
+implementation commit is `aca2556dfdde3ceca8c0c2da1bfab0105eb21e7d`;
+The bridge was rerun against clean Asma revision
+`03d6cad7eaa97cf6e332515f6e5e0a9172b5addc`; the exact module is unchanged.
+`tools/analyze_treatment_sequence.py` has SHA-256
+`0b3492e8b9fcc9dd2b7100d81552e212bc0f9c1aeed420b40bb76a9c93cb7a1b`. Scalar proportional removal commutes with
+homogeneous linear dynamics. A fixed absolute residual operation is a different,
+state-dependent map. The VH engine exposes those choices rather than assigning
+clinical meaning to them. Selective removal and nonlinear kinetics are explicit
+counterexamples to extrapolating the scalar/linear null case.
+
+An optional fork-specific bridge check is provided by
+[`scripts/validate_asma_interventions.py`](../scripts/validate_asma_interventions.py).
+It uses a **trusted local** Asma checkout containing
+`tools/analyze_treatment_sequence.py`; it does not download code or add Asma as a
+runtime/test-suite dependency. The three artificial fixtures compare twelve
+named intervention-order outcomes with exact rational operators from the Asma
+experiment. Maximum absolute discrepancy is 4.8531e-14 mol/L, below the declared
+1e-10 mol/L tolerance. A fixed-residual operation remains explicit caller logic,
+converted to named retention fractions before passing it to the VH protocol.
+
+```bash
+# Use a trusted checkout of the companion Asma research branch/PR.
+PYTHONPATH=. python scripts/validate_asma_interventions.py \
+  --asma-root /path/to/project-asma
+```
+
+The [recorded bridge output](../auto-research/2026-11-05-E-reaction-experiments/bridge-results.json)
+contains checkout commits, dirty flags and SHA-256 hashes of the actual three
+executed source files. Dirty flags deliberately distinguish worktree code from a
+clean committed revision. Values are reused as artificial mol/L concentrations
+in VH and arbitrary burden units in Asma to compare the same mathematics; this
+is **not a physiological unit conversion**. The bridge does not reproduce the
+full published Gu model or analyze a clinical dataset.
+
+This enables explicit hypothesis-testing software experiments, not simulated
+human disease. No patient data, anti-Yo mechanism claim, treatment recommendation
+or validation of individual outcomes enters either the bridge or the library.
+The Track E BioModels SBML milestone remains open. Fork-specific coordination
+and the optional bridge are separate from the reusable library commit for future
+upstream review.
+
+Verification for this increment: **153 Python tests passed with no skips** in
+62.85 seconds, including 42 new focused cases. JavaScript engine checks passed
+against both checked-in and regenerated fixtures, with worst plasma-profile
+relative error 4.8e-13 over 48 points. Regenerated molecular fixtures were not
+retained. This is numerical software verification, not biological validation.
