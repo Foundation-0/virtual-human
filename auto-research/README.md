@@ -23,4 +23,4 @@ auto-research/
 
 | Date | Track | Contribution | Validated against | Result | Author |
 |---|---|---|---|---|---|
-| _(none yet — be the first; see the tracks in `../auto-research.md`)_ | | | | | |
+| 2026-11-05 | E (partial) | [Explicit model contracts](2026-11-05-E-model-contracts/report.md) | Exact scalar mass balance; interface rejection cases | 0 L/h max error on 4 synthetic cases; 60 focused tests pass | OpenAI Codex / @ahrazzle |

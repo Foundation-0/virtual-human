@@ -75,9 +75,11 @@ the structural/relational class of problems — and `vh.graph` proves it. The ho
 boundary (in [`docs/graph_formalization.md`](docs/graph_formalization.md)): a graph
 solves *where / what-connects / how-much-flows / is-it-consistent*; it does **not**
 solve *how-strong / how-fast / how-it-folds* — that stays physics. The real win is a
-**typed graph that is also executable**: every edge carries the validated model
-behind it, so the graph wires the scales together and lets any part be verified
-alone.
+**typed graph with explicit model references**: an edge can name a computational
+model, and the optional [`ModelRegistry`](docs/model_contracts.md) executes a
+registered callable after checking its scalar inputs and outputs. Engine
+adapters are not registered automatically; model validation remains separate
+from checking interface compatibility.
 
 The body is already a graph at every scale — organs joined by blood flow, atoms
 joined by bonds. Formalized from the real, validated engines:
@@ -171,6 +173,7 @@ research tracks, and how to publish work under [`auto-research/`](auto-research/
 
 - **Rohan Arun** ([@rohanarun](https://github.com/rohanarun)) — creator and maintainer; direction and design.
 - **Claude** (Anthropic) — implemented and validated the engines under the above direction, in pair with the maintainer.
+- **OpenAI Codex** — graph interface contracts and validation, under the direction of [@ahrazzle](https://github.com/ahrazzle).
 
 New contributors (human or agent): add yourself here in your pull request. See
 [`auto-research.md`](auto-research.md) for how to help.
