@@ -25,7 +25,8 @@ _NODE_STYLE = {
 }
 _EDGE_LABEL = {
     "flow": lambda e: f"{e.attrs.get('flow', 0):.1f} L/h",
-    "clears": lambda e: f"CL {e.attrs.get('cl', 0):.2f} L/h",
+    "clears": lambda e: (f"CL {e.attrs.get('cl', 0):.2f} {e.attrs.get('units', '?')} "
+                          f"({e.attrs.get('reference_basis', 'unspecified')})"),
     "absorbs": lambda e: f"Fa·Fg={e.attrs.get('fa',0)*e.attrs.get('fg',1):.2f}",
     "binds": lambda e: f"Kd {e.attrs.get('kd_nm','?')} nM",
     "bond": lambda e: "",

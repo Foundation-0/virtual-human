@@ -13,7 +13,12 @@ What this buys (see docs/graph_formalization.md):
   - partial verification: pull out a subgraph and check it on its own;
   - a place to wire the physics engines (vh.quantum, vh.molecular, vh.body)
     together and route information between scales.
+
+ModelRegistry executes an explicitly registered Edge.model with scalar interface
+contracts. See docs/model_contracts.md; existing engine adapters are not registered
+automatically, and graph reachability is not a claim of biological causation.
 """
 
 from .core import Edge, Graph, Node, Schema  # noqa: F401
+from .contracts import ContractError, ModelRegistry, ModelSpec, PortSpec, Quantity  # noqa: F401
 from . import algorithms  # noqa: F401

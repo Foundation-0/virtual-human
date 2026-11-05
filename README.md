@@ -1,5 +1,10 @@
 # Virtual Human
 
+**Foundation-0 development fork:** reusable graph work supporting
+[Project Asma](https://github.com/Foundation-0/project-asma). See the
+[integration and validation record](docs/project-asma-integration.md).
+The original project is [Rohan Arun's Virtual Human](https://github.com/rohanarun/virtual-human).
+
 > *Solving problems in the human body by formalizing the real world into code for agents.*
 
 A multi-scale simulation of the human body for testing medicines and proteins,
@@ -75,16 +80,23 @@ the structural/relational class of problems — and `vh.graph` proves it. The ho
 boundary (in [`docs/graph_formalization.md`](docs/graph_formalization.md)): a graph
 solves *where / what-connects / how-much-flows / is-it-consistent*; it does **not**
 solve *how-strong / how-fast / how-it-folds* — that stays physics. The real win is a
-**typed graph that is also executable**: every edge carries the validated model
-behind it, so the graph wires the scales together and lets any part be verified
-alone.
+**typed graph with explicit model references**: an edge can name a computational
+model, and the optional [`ModelRegistry`](docs/model_contracts.md) executes a
+registered callable after checking its scalar inputs and outputs. Engine
+adapters are not registered automatically; model validation remains separate
+from checking interface compatibility.
 
 The body is already a graph at every scale — organs joined by blood flow, atoms
 joined by bonds. Formalized from the real, validated engines:
 
-<p align="center">
-  <img src="docs/img/pbpk_graph.png" width="760" alt="The whole-body model as a flow graph of organs">
-</p>
+```mermaid
+flowchart LR
+  liver -->|"CL 16.86 L/h, plasma: effective hepatic"| eliminated
+  kidney -->|"CL 0.24 L/h, plasma: nominal filtration"| eliminated
+```
+
+This view shows the clearance reporting parameters; the [complete whole-body
+Mermaid source](docs/img/pbpk_graph.mmd) also includes blood flow and absorption.
 
 Graph algorithms (all written from scratch) then give exact answers:
 
@@ -99,7 +111,7 @@ Graph algorithms (all written from scratch) then give exact answers:
 | What does an oral drug hit first? | path enumeration | `gut → liver` before systemic — **first-pass metabolism from topology** |
 | Does anything recirculate? | strongly-connected components | one loop spanning 15 compartments (systemic circulation) |
 | Where are the hubs? | betweenness centrality | arterial, venous, lung |
-| **Verify a part in isolation** | subgraph extraction | elimination subgraph clearance = full model **exactly (28.488 L/h)** |
+| **Inspect a part in isolation** | subgraph extraction | plasma-referenced clearance reporting sum **17.104 L/h**; exact IV dose/AUC **17.103 L/h** ([distinction](docs/graph_formalization.md#clearance-reporting-and-independent-verification)) |
 | **The graph verifying the engine** | BFS on the bond graph | reproduces the force field's **1687 exclusion pairs exactly** (symmetric difference 0) |
 
 That last row is the sharpest: a pure topological fact (atoms within bond-distance ≤ 3)
@@ -171,6 +183,7 @@ research tracks, and how to publish work under [`auto-research/`](auto-research/
 
 - **Rohan Arun** ([@rohanarun](https://github.com/rohanarun)) — creator and maintainer; direction and design.
 - **Claude** (Anthropic) — implemented and validated the engines under the above direction, in pair with the maintainer.
+- **OpenAI Codex** — graph interface contracts, clearance reference validation and reporting, under the direction of [@ahrazzle](https://github.com/ahrazzle).
 
 New contributors (human or agent): add yourself here in your pull request. See
 [`auto-research.md`](auto-research.md) for how to help.
