@@ -69,7 +69,7 @@ faster than real time.
 | `vh.molecular` | From-scratch JAX engine: AMBER ff14SB force field, GB-OBC2 implicit water, autodiff forces, Langevin (BAOAB) and Verlet dynamics, L-BFGS minimization | Matches OpenMM (used only as a referee) term by term to ~1e-14 relative on real proteins; trajectories identical step by step; energy conserved ([`docs/validation_molecular.md`](docs/validation_molecular.md)) |
 | `vh.body` | From-scratch whole-body PBPK: 13 organs + blood, Rodgers & Rowland tissue partitioning, liver (well-stirred, IVIVE), kidney (filtration), oral absorption (stomach + 7-segment intestine) with gut-wall first-pass, virtual populations; solved exactly with matrix exponentials | Bottom-up midazolam predictions vs 100 clinical datasets (IV and oral) digitized by the Open Systems Pharmacology project |
 | `vh.bridge` | Unbound drug at the target organ → receptor occupancy over time; Kd ↔ binding free energy | Analytic round-trip; kinetic occupancy |
-| `vh.graph` | **Formalizes the body as a typed graph** across scales (organs↔blood flow, atoms↔bonds); graph algorithms for reachability, pathways, cycles, flow balance, bottlenecks; renders and verifies subgraphs | Blood conservation (Kirchhoff) to 1e-16 on the real PBPK model; a pure graph BFS reproduces the force field's exclusion list exactly ([`docs/graph_formalization.md`](docs/graph_formalization.md)) |
+| `vh.graph` | **Formalizes the body as a typed graph** across scales (organs↔blood flow, species↔reactions, atoms↔bonds); graph algorithms for reachability, pathways, cycles, flow balance, bottlenecks; renders and verifies subgraphs; imports SBML reaction networks with exact conservation and consistency invariants | Blood conservation (Kirchhoff) to 1e-16 on the real PBPK model; a pure graph BFS reproduces the force field's exclusion list exactly; SBML trajectories and steady states match libRoadRunner to ~1e-9 ([`docs/graph_formalization.md`](docs/graph_formalization.md)) |
 | `web/` | Real-time demo: atom-level protein dynamics and a virtual patient, live in the browser | JS engine checked against the Python engine to ≤1e-12 |
 
 The explicit-solvent engine (`vh.molecular.periodic`, `.constraints`, `.explicit_md`) adds rung 3 of the accuracy ladder: every water molecule, exact long-range electrostatics (Ewald / smooth PME), rigid-water SHAKE/RATTLE and a Monte-Carlo barostat — validated term-by-term against OpenMM Ewald (energy to 1e-13, PME to 1e-11, constraints to 1e-16).
@@ -161,12 +161,13 @@ vh/molecular   energy.py (force field), integrate.py, minimize.py, prep.py, io.p
                periodic.py (Ewald/PME explicit solvent), constraints.py (SHAKE/RATTLE), explicit_md.py
 vh/body        physiology.py, partition.py, compound.py, pbpk.py
 vh/bridge      molecular → body coupling (Kd ↔ ΔG, receptor occupancy)
-vh/graph       core.py (typed property graph), algorithms.py, physiology_graph.py, render.py
+vh/graph       core.py (typed property graph), algorithms.py, physiology_graph.py, render.py,
+               contracts.py (model interfaces), sbml.py (SBML import), stoichiometry.py (exact algebra)
 tests/         pytest suite
 scripts/       validation report + figure generators
 docs/          accuracy_ladder, graph_formalization, feasibility, validation reports, architecture, roadmap
 web/           real-time browser engine + demo
-data/          structures, tissue composition, clinical observations
+data/          structures, tissue composition, clinical observations, SBML models (CC0)
 ```
 
 ## Not a medical device
@@ -187,6 +188,7 @@ research tracks, and how to publish work under [`auto-research/`](auto-research/
 - **Rohan Arun** ([@rohanarun](https://github.com/rohanarun)) — creator and maintainer; direction and design.
 - **Claude** (Anthropic) — implemented and validated the engines under the above direction, in pair with the maintainer.
 - **OpenAI Codex** — graph interface contracts, clearance reference validation, and conserved reaction/intervention experiments, under the direction of [@ahrazzle](https://github.com/ahrazzle).
+- **Claude** (Anthropic), Foundation-0 fork — SBML import with exact conservation and positive-mass consistency invariants.
 
 New contributors (human or agent): add yourself here in your pull request. See
 [`auto-research.md`](auto-research.md) for how to help.

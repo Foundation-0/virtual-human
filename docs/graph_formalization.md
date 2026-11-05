@@ -86,6 +86,58 @@ flowchart LR
 The full diagrams remain reproducible from the linked Mermaid sources. Old
 raster/vector images with mixed reference values have been removed.
 
+## Reaction networks from SBML
+
+`vh.graph.sbml` reads a declared subset of SBML (Levels 2 and 3 core) from
+scratch: compartments, species, parameters, function definitions, initial
+assignments, assignment rules and reactions with MathML kinetic laws. Anything
+outside the subset — events, rate or algebraic rules, delays, fast reactions,
+stoichiometryMath, conversion factors, required packages — is refused by name,
+never silently dropped. A model becomes
+
+- an **executable network**: reaction rates, `d amount / dt = N v`,
+  trajectories, steady states and the Jacobian restricted to the stoichiometric
+  class; and
+- a **typed graph**: `species`, `reaction`, `compartment` and `moiety` nodes;
+  `reactant`/`product` edges carrying exact stoichiometry, `modifier` edges, and
+  `member` edges from each species to the conserved moieties it belongs to.
+
+The graph schema adds four invariants, each recomputed from the graph's own
+edges rather than trusted from the importer:
+
+- **stoichiometry** — every coefficient is a positive exact rational;
+- **located** — every species is in exactly one compartment;
+- **conservation** — each moiety is an exact left-null vector of `N`
+  (`l . N = 0` in rational arithmetic), the moieties are independent and span
+  the whole left nullspace, and each total equals the weighted initial amounts;
+- **stoichiometric consistency** — every reacting species admits a strictly
+  positive mass conserved by all internal reactions (Gevorgyan et al. 2008).
+  Each answer carries an exact certificate: a mass vector, or a reaction
+  combination that provably creates the unconserved species from nothing.
+
+Validated on three CC0 BioModels in [`data/sbml/`](../data/sbml/sources.json)
+against exact algebra and libRoadRunner as an independent referee (details in
+the [auto-research report](../auto-research/2026-11-05-E-sbml-import/report.md)):
+
+| Model | Exact conservation laws | Referee agreement |
+|---|---|---|
+| Kholodenko 2000 MAPK oscillator (BIOMD0000000010) | 3 kinase totals (100, 300, 300) | trajectories 7e-10; unstable fixed point and eigenvalues match; period 1299.77 to 9e-12 |
+| Huang & Ferrell 1996 MAPK cascade (BIOMD0000000009) | 7 enzyme/kinase/phosphatase totals | trajectories 6e-10; stable steady state 2e-12; eigenvalues 8e-10 |
+| Elowitz & Leibler 2000 repressilator (BIOMD0000000012) | none (open system) | trajectories 7e-10; unstable fixed point; period 125.354 to 2e-12 |
+
+```mermaid
+flowchart LR
+  MKKK -->|J0| MKKK_P -->|J1| MKKK
+  MKK -->|J2| MKK_P -->|J3| MKK_PP -->|J4| MKK_P -->|J5| MKK
+  MAPK -->|J6| MAPK_P -->|J7| MAPK_PP -->|J8| MAPK_P -->|J9| MAPK
+  MKKK_P -.->|activates J2, J3| MKK
+  MKK_PP -.->|activates J6, J7| MAPK
+  MAPK_PP -.->|inhibits J0| MKKK
+```
+
+The full imported graph, including reaction nodes and moieties, is in
+[`img/kholodenko_mapk_sbml.mmd`](img/kholodenko_mapk_sbml.mmd).
+
 ## The graph verifying the physics engine
 
 The sharpest demonstration that the formalization is faithful: a **pure graph
@@ -130,5 +182,6 @@ physics a formal, inspectable, verifiable skeleton to hang on.
 
 ```bash
 python scripts/validate_graph.py     # runs every algorithm above, renders the diagrams
-pytest -q tests/test_graph.py tests/test_graph_clearance.py
+python scripts/validate_sbml.py      # SBML import against exact algebra and libRoadRunner
+pytest -q tests/test_graph.py tests/test_graph_clearance.py tests/test_sbml.py
 ```
