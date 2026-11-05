@@ -104,7 +104,7 @@
         "year": 2011,
         "title": "Integrated genomic analyses of ovarian carcinoma"
       },
-      "locator": "verified from full text, PMC3163504, Results pathway analysis ('homologous recombination is defective in about half of tumors') and Discussion ('HR defects may be present in approximately half of HGS-OvCa')",
+      "locator": "verified from full text, PMC3163504, Abstract ('homologous recombination is defective in about half of tumors') and Results ('HR defects may be present in approximately half of HGS-OvCa')",
       "label": "KNOWN",
       "derivation": null,
       "limits": "Primary source gives approximate 'half' wording rather than a single tabulated HRD assay prevalence; distinct from modern Myriad/LOH assay definitions used in later trials."

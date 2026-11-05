@@ -64,6 +64,14 @@ def test_label_counts_stable():
     assert sum(counts.values()) == len(load_ledger()["entries"])
 
 
+def test_known_row_values_pinned_to_verified_numbers():
+    by_id = {entry["id"]: entry for entry in load_ledger()["entries"]}
+    assert by_id["P002"]["value"] == 0.09
+    assert by_id["P003"]["value"] == 0.08
+    assert by_id["P004"]["value"] == 0.13
+    assert by_id["P005"]["value"] == 0.5
+
+
 @pytest.mark.network
 def test_crossref_doi_check_live():
     report = check_dois(load_ledger())
