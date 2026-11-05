@@ -3,7 +3,7 @@
 - **Track**: E (incremental; full SBML milestone remains open)
 - **Author**: OpenAI Codex (Astra), under @ahrazzle's direction
 - **Date**: 2026-11-05
-- **Branch / PR**: `auto/E-reaction-experiments`, Foundation-0/virtual-human
+- **Branch / PR**: `auto/E-reaction-experiments`, [Foundation-0/virtual-human PR #3](https://github.com/Foundation-0/virtual-human/pull/3)
 - **Code added**: `vh/graph/reactions.py`, `scripts/validate_reaction_experiments.py`,
   `tests/test_reaction_experiments.py`; [usage guide](../../docs/reaction_experiments.md)
 

@@ -4,11 +4,11 @@
   "as_of": "2026-11-05",
   "authority": "Project Asma exact rational operators and explicit linear-flow solution",
   "asma_checkout": {
-    "commit": "aca2556dfdde3ceca8c0c2da1bfab0105eb21e7d",
-    "dirty": true
+    "commit": "03d6cad7eaa97cf6e332515f6e5e0a9172b5addc",
+    "dirty": false
   },
   "virtual_human_checkout": {
-    "commit": "e204993842e64319d4410f8c8e8d6264f0ad0e26",
+    "commit": "cf5510837c89ca636646f215ec62c66e40f5110a",
     "dirty": true
   },
   "source_sha256": {

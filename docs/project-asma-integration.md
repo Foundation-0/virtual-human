@@ -123,7 +123,7 @@ the team at 14:53:50 UTC as
 that merged main. This contributing session did not merge it, and no original
 upstream posting or permission retry was needed.
 
-The next reusable increment adds
+The next reusable increment, [fork PR #3](https://github.com/Foundation-0/virtual-human/pull/3), adds
 [reaction networks and ordered interventions](reaction_experiments.md): elementary
 mass-action dynamics in one fixed compartment, exact rational conserved-pool
 checks, graph export, analytic local rate-multiplier sensitivities, and explicit
@@ -138,6 +138,8 @@ The immediate Asma research need is to test treatment-sequence **assumptions**
 raised by the public Rosen/Gu work, implemented in
 [Asma PR #47](https://github.com/Foundation-0/project-asma/pull/47). Its initial
 implementation commit is `aca2556dfdde3ceca8c0c2da1bfab0105eb21e7d`;
+The bridge was rerun against clean Asma revision
+`03d6cad7eaa97cf6e332515f6e5e0a9172b5addc`; the exact module is unchanged.
 `tools/analyze_treatment_sequence.py` has SHA-256
 `0b3492e8b9fcc9dd2b7100d81552e212bc0f9c1aeed420b40bb76a9c93cb7a1b`. Scalar proportional removal commutes with
 homogeneous linear dynamics. A fixed absolute residual operation is a different,
