@@ -19,7 +19,8 @@ Machine-readable population parameters for **high-grade serous ovarian cancer (H
 
 Each row carries **`label`**:
 
-- **KNOWN** — numeric or categorical value reported in the cited primary source at the given locator.
+- **KNOWN** — numeric or categorical value read from **open full text** of the cited primary source (locator includes `verified from full text, ...`).
+- **CONJECTURE** — value taken from abstract or secondary summary when full text is not openly accessible; **`derivation`** must include `value from abstract only` or an explicit derivation chain.
 - **CONJECTURE** — value inferred or relayed from a secondary summary; see **`derivation`**.
 - **MISSING** — quantity required for modeling but no adequate primary-source estimate; **`value`** is null (no guess).
 

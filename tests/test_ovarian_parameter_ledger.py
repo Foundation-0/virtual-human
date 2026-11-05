@@ -58,8 +58,9 @@ def test_missing_rows_have_null_value():
 
 def test_label_counts_stable():
     counts = label_counts(load_ledger())
-    assert counts["KNOWN"] >= 10
-    assert counts["MISSING"] >= 5
+    assert counts["KNOWN"] == 4
+    assert counts["CONJECTURE"] == 6
+    assert counts["MISSING"] == 12
     assert sum(counts.values()) == len(load_ledger()["entries"])
 
 
