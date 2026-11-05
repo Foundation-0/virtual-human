@@ -3,6 +3,9 @@
 **Foundation-0 development fork:** reusable graph work supporting
 [Project Asma](https://github.com/Foundation-0/project-asma). See the
 [integration and validation record](docs/project-asma-integration.md).
+Start with the [plain-language research foundation](docs/research-foundation.md)
+for the evidence-map, simulation and validation boundaries, then use the
+[bounded research-question template](docs/research-question-template.md).
 The original project is [Rohan Arun's Virtual Human](https://github.com/rohanarun/virtual-human).
 
 > *Solving problems in the human body by formalizing the real world into code for agents.*
