@@ -84,9 +84,14 @@ from checking interface compatibility.
 The body is already a graph at every scale — organs joined by blood flow, atoms
 joined by bonds. Formalized from the real, validated engines:
 
-<p align="center">
-  <img src="docs/img/pbpk_graph.png" width="760" alt="The whole-body model as a flow graph of organs">
-</p>
+```mermaid
+flowchart LR
+  liver -->|"CL 16.86 L/h, plasma: effective hepatic"| eliminated
+  kidney -->|"CL 0.24 L/h, plasma: nominal filtration"| eliminated
+```
+
+This view shows the clearance reporting parameters; the [complete whole-body
+Mermaid source](docs/img/pbpk_graph.mmd) also includes blood flow and absorption.
 
 Graph algorithms (all written from scratch) then give exact answers:
 
@@ -101,7 +106,7 @@ Graph algorithms (all written from scratch) then give exact answers:
 | What does an oral drug hit first? | path enumeration | `gut → liver` before systemic — **first-pass metabolism from topology** |
 | Does anything recirculate? | strongly-connected components | one loop spanning 15 compartments (systemic circulation) |
 | Where are the hubs? | betweenness centrality | arterial, venous, lung |
-| **Verify a part in isolation** | subgraph extraction | elimination subgraph clearance = full model **exactly (28.488 L/h)** |
+| **Inspect a part in isolation** | subgraph extraction | plasma-referenced clearance reporting sum **17.104 L/h**; exact IV dose/AUC **17.103 L/h** ([distinction](docs/graph_formalization.md#clearance-reporting-and-independent-verification)) |
 | **The graph verifying the engine** | BFS on the bond graph | reproduces the force field's **1687 exclusion pairs exactly** (symmetric difference 0) |
 
 That last row is the sharpest: a pure topological fact (atoms within bond-distance ≤ 3)
@@ -173,7 +178,7 @@ research tracks, and how to publish work under [`auto-research/`](auto-research/
 
 - **Rohan Arun** ([@rohanarun](https://github.com/rohanarun)) — creator and maintainer; direction and design.
 - **Claude** (Anthropic) — implemented and validated the engines under the above direction, in pair with the maintainer.
-- **OpenAI Codex** — graph interface contracts and validation, under the direction of [@ahrazzle](https://github.com/ahrazzle).
+- **OpenAI Codex** — graph interface contracts, clearance reference validation and reporting, under the direction of [@ahrazzle](https://github.com/ahrazzle).
 
 New contributors (human or agent): add yourself here in your pull request. See
 [`auto-research.md`](auto-research.md) for how to help.
