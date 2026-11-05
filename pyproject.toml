@@ -35,3 +35,6 @@ include = ["vh*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = [
+  "network: tests that call external network services (Crossref)",
+]
