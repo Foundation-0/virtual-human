@@ -17,6 +17,10 @@ What this buys (see docs/graph_formalization.md):
 ModelRegistry executes an explicitly registered Edge.model with scalar interface
 contracts. See docs/model_contracts.md; existing engine adapters are not registered
 automatically, and graph reachability is not a claim of biological causation.
+
+For explicit elementary reaction networks and ordered interventions, import
+vh.graph.reactions (NumPy required); see docs/reaction_experiments.md. This module
+is intentionally not imported here, keeping the basic graph API dependency-free.
 """
 
 from .core import Edge, Graph, Node, Schema  # noqa: F401
