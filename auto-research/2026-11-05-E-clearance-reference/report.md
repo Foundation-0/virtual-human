@@ -77,6 +77,12 @@ checks are to be recorded by the integrating contributor before publication.
 
 ## Limits
 
+**Subsequent combined verification, 2026-11-05:** 111 Python tests passed and
+JavaScript engine checks passed with checked-in and regenerated references.
+See the [integration record](../../docs/project-asma-integration.md) for the
+revision, environment, commands and limits; numerical agreement does not establish
+biological applicability.
+
 - No change to the PBPK engine or evidence of a biological prediction improving.
 - Clearance reporting is not automatic model execution. A schema can reject
   contradictory declared metadata; it cannot prove the original measurement's

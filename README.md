@@ -1,5 +1,10 @@
 # Virtual Human
 
+**Foundation-0 development fork:** reusable graph work supporting
+[Project Asma](https://github.com/Foundation-0/project-asma). See the
+[integration and validation record](docs/project-asma-integration.md).
+The original project is [Rohan Arun's Virtual Human](https://github.com/rohanarun/virtual-human).
+
 > *Solving problems in the human body by formalizing the real world into code for agents.*
 
 A multi-scale simulation of the human body for testing medicines and proteins,

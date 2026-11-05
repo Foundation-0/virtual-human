@@ -68,6 +68,12 @@ dispatch after graph round-trip and preservation of provenance lineage.
 Full engine and browser suites are outside this focused validation run; their
 status must be checked before merging alongside other changes.
 
+**Subsequent combined run, 2026-11-05:** 111 Python tests passed and JavaScript
+engine checks passed with both checked-in and regenerated reference fixtures.
+See the [integration record](../../docs/project-asma-integration.md) for code
+revision, exact commands, runtime and limits. This does not broaden the biological
+scope of the synthetic validation above.
+
 ## Limits
 
 Matching metadata does not establish biological validity, causal direction,
