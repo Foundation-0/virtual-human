@@ -768,6 +768,29 @@ def _topological(defs: dict[str, tuple], targets: set[str]) -> list[str]:
 # ---------------------------------------------------------------------------
 # reading
 # ---------------------------------------------------------------------------
+def _refuse_dtd(data: bytes) -> None:
+    """Refuse any DOCTYPE or entity declaration before the real parse.
+
+    Expat decodes the document in whatever encoding it declares (UTF-8,
+    UTF-16 with or without a byte-order mark, Latin-1, ...), so the check
+    sees the declarations themselves. A scan of the raw bytes would not: in
+    UTF-16, ``<!DOCTYPE`` is interleaved with NUL bytes. Encodings expat cannot
+    read are refused as malformed rather than passed through unchecked.
+    """
+    import xml.parsers.expat as expat
+
+    def refuse(*_):
+        raise SBMLError("documents with a DOCTYPE or entity declarations are refused")
+
+    parser = expat.ParserCreate()
+    parser.StartDoctypeDeclHandler = refuse
+    parser.EntityDeclHandler = refuse
+    try:
+        parser.Parse(data, True)
+    except expat.ExpatError as exc:
+        raise SBMLError(f"malformed XML: {exc}") from exc
+
+
 def read_sbml(source) -> SBMLModel:
     """Read an SBML document from a path or bytes. A path's SHA-256 is recorded."""
     if isinstance(source, (bytes, bytearray)):
@@ -775,9 +798,7 @@ def read_sbml(source) -> SBMLModel:
     else:
         origin = Path(source)
         data = origin.read_bytes()
-    head = data[:4096].lower()
-    if b"<!doctype" in head or b"<!entity" in data.lower():
-        raise SBMLError("documents with a DOCTYPE or entity declarations are refused")
+    _refuse_dtd(data)
     root = ET.fromstring(data)
     if _local(root.tag) != "sbml":
         raise SBMLError("root element is not <sbml>")

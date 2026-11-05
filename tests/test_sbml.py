@@ -187,6 +187,30 @@ def test_doctype_and_entity_declarations_are_refused(prefix):
         read_sbml(prefix + l3(BASE).split(b"\n", 1)[1])
 
 
+UTF16_ENTITY = ('<?xml version="1.0" encoding="UTF-16"?>\n<!DOCTYPE sbml [<!ENTITY x "EXPANDED_VALUE">]>\n'
+                '<sbml xmlns="http://www.sbml.org/sbml/level2/version4" level="2" version="4"><model id="m">'
+                '<listOfCompartments><compartment id="c" name="&x;" size="1"/></listOfCompartments></model></sbml>')
+
+
+@pytest.mark.parametrize("encoding", ["utf-16", "utf-16-le", "utf-16-be"])
+def test_entity_refusal_does_not_depend_on_the_byte_encoding(encoding):
+    # Regression: an ASCII byte scan missed these, and the entity was expanded.
+    with pytest.raises(SBMLError, match="DOCTYPE"):
+        read_sbml(UTF16_ENTITY.encode(encoding))
+
+
+def test_utf16_documents_without_a_doctype_still_load():
+    doc = l3(BASE + "<listOfReactions>" + DECAY + "</listOfReactions>").decode()
+    m = read_sbml(doc.replace('encoding="UTF-8"', 'encoding="UTF-16"').encode("utf-16"))
+    assert m.dynamic_species == ["A", "B"]
+
+
+@pytest.mark.parametrize("data", [b"", b"<sbml", "<?xml version='1.0' encoding='UTF-32'?><sbml/>".encode("utf-32")])
+def test_unreadable_xml_is_an_sbml_error(data):
+    with pytest.raises(SBMLError):
+        read_sbml(data)
+
+
 @pytest.mark.parametrize("doc,message", [
     (l3(COMP.format(size=1) + "<listOfSpecies>" + species("A", conc=1, constant="true") + species("B", conc=0)
         + "</listOfSpecies><listOfReactions>" + DECAY + "</listOfReactions>"), "constant"),
