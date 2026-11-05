@@ -29,6 +29,12 @@ used for this contribution.
 
 ## Contributions and acceptance
 
+Reviewable changes: [fork PR #1](https://github.com/Foundation-0/virtual-human/pull/1)
+and [Project Asma PR #45](https://github.com/Foundation-0/project-asma/pull/45).
+Both were opened as drafts. They are independently reviewable: Asma uses the
+unchanged baseline graph core, so its prototype does not require merging this
+fork PR first. Upstream submission is still pending contributor access.
+
 The initial integration combines two separately reviewable commits and reports:
 
 | Contribution | Validation authority and outcome |
