@@ -102,6 +102,15 @@ replace the affected stale images; no browser policy was changed.
    acceptance, and fork-specific coordination docs need not accompany upstream
    feature PRs.
 
+**2026-11-05 14:41 UTC update:** the team merged
+[Asma PR #45](https://github.com/Foundation-0/project-asma/pull/45) as
+`3afeb2b9b14b9bc7fc126e3503554d7673b43673` after its
+[full CI](https://github.com/Foundation-0/project-asma/actions/runs/42046224134)
+passed: 227 Python tests, pinned container builds, offline checks and 40 execution
+controls. This fork's reusable changes remain independently reviewable in PR #1.
+The Asma merge adopts only the bounded graph use described here, not the simulation
+stack or a clinically validated model. This contributing session did not merge it.
+
 No automatic merge, deployment, background research run or patient simulation is
 introduced by this workflow. Further simulation work needs a defined biological
 question, applicable inputs and validation that can resolve that question.
