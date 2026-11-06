@@ -162,7 +162,8 @@ vh/molecular   energy.py (force field), integrate.py, minimize.py, prep.py, io.p
 vh/body        physiology.py, partition.py, compound.py, pbpk.py
 vh/bridge      molecular → body coupling (Kd ↔ ΔG, receptor occupancy)
 vh/graph       core.py (typed property graph), algorithms.py, physiology_graph.py, render.py,
-               contracts.py (model interfaces), sbml.py (SBML import), stoichiometry.py (exact algebra)
+               contracts.py (model interfaces), sbml.py (SBML import), stoichiometry.py (exact algebra),
+               reactions.py (mass-action dynamics, ordered interventions, kinetic invariants)
 tests/         pytest suite
 scripts/       validation report + figure generators
 docs/          accuracy_ladder, graph_formalization, feasibility, validation reports, architecture, roadmap
