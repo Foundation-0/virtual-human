@@ -71,3 +71,10 @@ of `Schema`; the registry dispatches the explicitly named model only. Callbacks
 should be pure functions: rejecting an invalid output cannot undo callback side
 effects. The registry is not a sandbox for untrusted Python. Contract and callable
 definitions remain outside serialized graph data.
+
+## Optional evidence bindings
+
+For recorded source locators, uncertainty metadata, missing/conflicting input refusal,
+and explicitly enabled synthetic scenarios, see [evidence bindings](evidence_bindings.md).
+This opt-in layer preserves input audit records; it does not certify scientific
+applicability or infer output uncertainty.

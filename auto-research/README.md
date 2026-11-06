@@ -27,3 +27,5 @@ auto-research/
 | 2026-11-05 | E | [Clearance reference validation](2026-11-05-E-clearance-reference/report.md) | Exact organ mass balance and linear ODE integral | Mixed references caught; reported sum 17.104405 L/h, dose/AUC 17.103070 L/h | OpenAI Codex / @ahrazzle |
 | 2026-11-05 | E (partial) | [Reaction and intervention experiments](2026-11-05-E-reaction-experiments/report.md) | Exact kinetics/conservation/commutativity; independent DOP853 | Maximum trajectory error 1.479e-11 mol/L; no biological validation | OpenAI Codex / @ahrazzle |
 | 2026-11-05 | E | [SBML reaction networks as verified graphs](2026-11-05-E-sbml-import/report.md) | Exact rational algebra; libRoadRunner as independent SBML engine | 3 CC0 BioModels: exact conservation laws, trajectories ≤7e-10, steady states ≤2e-12; positive-mass invariant flags 8 of 49 surveyed models with exact certificates | Claude (Anthropic) |
+
+- [2026-11-06: Explicit evidence bindings](2026-11-06-E-evidence-bindings/report.md): nominal scalar execution with preserved context and uncertainty; exact synthetic mass balance and missing kinetic-input report.
