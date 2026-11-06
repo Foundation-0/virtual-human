@@ -11,9 +11,23 @@ from dataclasses import dataclass
 import json
 from types import MappingProxyType
 from collections.abc import Mapping
+from numbers import Integral, Rational
 
 from .contracts import ContractError, ModelRegistry, PortSpec, Quantity, _text, _finite
 from .core import Edge
+
+
+def _audit_scalar(value):
+    """Lossless JSON representation of an accepted scalar, or refuse binding."""
+    if isinstance(value, Integral):
+        return int(value)
+    if isinstance(value, Rational):
+        return {"representation": "rational", "numerator": int(value.numerator),
+                "denominator": int(value.denominator)}
+    converted = float(value)
+    if value != converted:
+        raise ContractError("scalar cannot be serialized losslessly for evidence audit")
+    return converted
 
 
 @dataclass(frozen=True)
@@ -69,9 +83,9 @@ class EvidenceInput:
         return {"record_id": self.record_id, "status": self.status, "source": self.source,
                 "locator": self.locator, "limits": self.limits,
                 "uncertainty": {"kind": self.uncertainty.kind, "description": self.uncertainty.description,
-                    "low": None if self.uncertainty.low is None else float(self.uncertainty.low),
-                    "high": None if self.uncertainty.high is None else float(self.uncertainty.high)},
-                "estimate": None if q is None else {"value": float(q.value), "quantity": q.quantity,
+                    "low": None if self.uncertainty.low is None else _audit_scalar(self.uncertainty.low),
+                    "high": None if self.uncertainty.high is None else _audit_scalar(self.uncertainty.high)},
+                "estimate": None if q is None else {"value": _audit_scalar(q.value), "quantity": q.quantity,
                     "unit": q.unit, "basis": q.basis, "context": dict(q.context),
                     "provenance": list(q.provenance)}}
 

@@ -141,5 +141,19 @@ def test_finite_real_scalars_have_serializable_audits():
                    uncertainty=Uncertainty("bounds", "artificial", Fraction(1, 4), Fraction(3, 4)))
     bound = item.bind(SPEC)
     assert bound.value == Fraction(1, 2)
-    assert item.audit()["estimate"]["value"] == 0.5
-    assert item.audit()["uncertainty"]["low"] == 0.25
+    assert item.audit()["estimate"]["value"] == {"representation": "rational", "numerator": 1, "denominator": 2}
+    assert item.audit()["uncertainty"]["low"] == {"representation": "rational", "numerator": 1, "denominator": 4}
+
+
+def test_audit_retains_large_integer_estimate_and_bounds_exactly():
+    value = 2**53 + 1
+    item = replace(record(), estimate=replace(record().estimate, value=value),
+                   uncertainty=Uncertainty("bounds", "artificial exact integers", value, value + 2))
+    models, calls = registry()
+    result = execute_evidence(models, EDGE, {"in": item}, {"in": SPEC})["out"]
+    audit = json.loads(next(s[len("evidence:"):] for s in result.provenance if s.startswith("evidence:")))
+    assert audit["estimate"]["value"] == value == result.value
+    assert audit["uncertainty"]["low"] == value
+    assert audit["uncertainty"]["high"] == value + 2
+    assert isinstance(audit["estimate"]["value"], int)
+    assert len(calls) == 1

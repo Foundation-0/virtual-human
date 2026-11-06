@@ -38,7 +38,7 @@ The executable floating-point model produces 6, 28 and 12 L/h respectively.
 | --- | --- | --- | --- |
 | Three nominal clearances | 6, 28, 12 L/h | Exact rational rate / concentration | Maximum 0 L/h; tolerance 1e-12 L/h |
 | Missing kinetic inputs | Four refused | Checked-in ledger P015, P016, P019, P020 | All four lack estimates; software consistency check only |
-| Interface tests | 32 new passing cases | Explicit boundary examples and exact arithmetic | No statistical accuracy claim |
+| Interface tests | 33 new passing cases | Explicit boundary examples and exact arithmetic | No statistical accuracy claim |
 
 The arithmetic error has no statistical error bar: these are fixed synthetic
 fixtures, not sampled observations. Source uncertainty remains attached to the
@@ -76,9 +76,9 @@ node web/test_engines.mjs
 ```
 
 Observed environment: Python 3.14.6, pytest 9.1.1, NumPy 2.5.4, SciPy 1.18.1.
-Focused pre-serialization check: 129 passed, 1 network test deselected; final evidence-only suite: 32 passed. JavaScript engine checks
+Focused pre-serialization check: 129 passed, 1 network test deselected; evidence-only suite before independent-review correction: 32 passed. JavaScript engine checks
 passed against checked-in fixtures, including worst plasma-profile relative error
-4.8e-13. Final full local suite: 217 passed, 15 skipped, 1 network test deselected. Skips reflect unavailable OpenMM, PySCF and libRoadRunner; those independent-engine checks were not run. No dependency installation was performed.
+4.8e-13. Final full local suite: 218 passed, 15 skipped, 1 network test deselected. Skips reflect unavailable OpenMM, PySCF and libRoadRunner; those independent-engine checks were not run. No dependency installation was performed.
 
 ## References
 
@@ -86,3 +86,9 @@ passed against checked-in fixtures, including worst plasma-profile relative erro
 - `data/clinical/ovarian_hgsoc_parameter_ledger.json`, unchanged source ledger.
 - `docs/research-foundation.md` and `docs/research-question-template.md` for the
   separation of evidence assertions, modeling assumptions and scientific validation.
+
+Independent software review found an audit precision defect for large integers.
+The correction preserves JSON integers and tagged exact rationals and rejects
+other non-lossless representations before dispatch. A large-integer regression
+verifies the executed value and recorded endpoints agree exactly. Final suite
+after this correction: 218 passed, 15 skipped, 1 network test deselected.

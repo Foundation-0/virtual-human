@@ -26,6 +26,11 @@ contract. Supplying weaker binding specifications cannot override that contract.
 A rejected input never invokes the registered callback. As with the registry,
 callbacks should be pure: output validation cannot undo callback side effects.
 
+Integer audit values retain exact JSON integers; rational values retain tagged
+numerator/denominator pairs. Other real scalar values must convert losslessly to
+a JSON float or binding fails before execution. Consumers must preserve these
+representations when decoding the audit.
+
 The complete input audit is serialized under an `evidence:` provenance entry and
 therefore accompanies every returned output through the registry's existing
 lineage union. Returned values are nominal scenario outputs. The recorded input
