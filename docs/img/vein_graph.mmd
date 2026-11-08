@@ -1,0 +1,26 @@
+%% Lower-limb venous flow graph (standing)
+flowchart BT
+  ra["ra"]
+  ivc["ivc"]
+  iliac["iliac"]
+  femoral["femoral"]
+  popliteal["popliteal"]
+  calf["calf"]
+  ankle["ankle"]
+  foot["foot"]
+  saphenous["saphenous"]
+  foot -->|"0.50 L/min"| ankle
+  ankle -->|"0.46 L/min"| calf
+  calf -->|"0.46 L/min"| popliteal
+  popliteal -->|"0.46 L/min"| femoral
+  femoral -->|"0.50 L/min"| iliac
+  iliac -->|"0.50 L/min"| ivc
+  ivc -->|"0.50 L/min"| ra
+  ankle -->|"0.04 L/min"| saphenous
+  saphenous -->|"0.04 L/min"| femoral
+  classDef c_compartment fill:#2B44C4,stroke:#222,color:#ffffff;
+  class calf,ankle,foot c_compartment;
+  classDef c_reservoir fill:#C2373A,stroke:#222,color:#ffffff;
+  class ra c_reservoir;
+  classDef c_junction fill:#586379,stroke:#222,color:#ffffff;
+  class ivc,iliac,femoral,popliteal,saphenous c_junction;

@@ -61,7 +61,7 @@ faster than real time.
 | `vh.molecular` | From-scratch JAX engine: AMBER ff14SB force field, GB-OBC2 implicit water, autodiff forces, Langevin (BAOAB) and Verlet dynamics, L-BFGS minimization | Matches OpenMM (used only as a referee) term by term to ~1e-14 relative on real proteins; trajectories identical step by step; energy conserved ([`docs/validation_molecular.md`](docs/validation_molecular.md)) |
 | `vh.body` | From-scratch whole-body PBPK: 13 organs + blood, Rodgers & Rowland tissue partitioning, liver (well-stirred, IVIVE), kidney (filtration), oral absorption (stomach + 7-segment intestine) with gut-wall first-pass, virtual populations; solved exactly with matrix exponentials | Bottom-up midazolam predictions vs 100 clinical datasets (IV and oral) digitized by the Open Systems Pharmacology project |
 | `vh.bridge` | Unbound drug at the target organ → receptor occupancy over time; Kd ↔ binding free energy | Analytic round-trip; kinetic occupancy |
-| `vh.graph` | **Formalizes the body as a typed graph** across scales (organs↔blood flow, atoms↔bonds); graph algorithms for reachability, pathways, cycles, flow balance, bottlenecks; renders and verifies subgraphs | Blood conservation (Kirchhoff) to 1e-16 on the real PBPK model; a pure graph BFS reproduces the force field's exclusion list exactly ([`docs/graph_formalization.md`](docs/graph_formalization.md)) |
+| `vh.graph` | **Formalizes the body as a typed graph** across scales (organs↔blood flow, atoms↔bonds); graph algorithms for reachability, pathways, cycles, flow balance, bottlenecks; **conserved-flow graphs** with R/C/L edge laws, gravity, Bernoulli, Starling collapse and valves; renders and verifies subgraphs | Blood conservation (Kirchhoff) to 1e-16 on the real PBPK model; a pure graph BFS reproduces the force field's exclusion list exactly; steady flow exact against Hagen–Poiseuille/Windkessel/Starling, and the standing foot venous pressure predicted at **88.7 mmHg** vs the physiological **85–90 mmHg** range ([`docs/graph_formalization.md`](docs/graph_formalization.md), [`docs/bernoulli_veins.md`](docs/bernoulli_veins.md)) |
 | `web/` | Real-time demo: atom-level protein dynamics and a virtual patient, live in the browser | JS engine checked against the Python engine to ≤1e-12 |
 
 The explicit-solvent engine (`vh.molecular.periodic`, `.constraints`, `.explicit_md`) adds rung 3 of the accuracy ladder: every water molecule, exact long-range electrostatics (Ewald / smooth PME), rigid-water SHAKE/RATTLE and a Monte-Carlo barostat — validated term-by-term against OpenMM Ewald (energy to 1e-13, PME to 1e-11, constraints to 1e-16).
@@ -107,6 +107,40 @@ and the physics engine's own nonbonded bookkeeping check each other. Render any
 subgraph to a diagram with `vh.graph.render`; reproduce all of the above with
 `python scripts/validate_graph.py`.
 
+### From structure to a quantitative flow prediction
+
+Topology alone cannot give a pressure. Add a validated constitutive law to every
+edge and the same graph becomes a lumped 1-D Navier–Stokes solver. `vh.graph.flow`
+does this with resistance, compliance, inertance, gravity, the Bernoulli kinetic
+term, Starling collapse and one-way valves:
+
+$$
+C_i\dot p_i=\sum_e B_{ie}q_e+s_i,\qquad
+L_e\dot q_e=p_{\text{src}}-p_{\text{dst}}-h_e-R_eq_e-\Delta p_{\text{kinetic}}-\Delta p_{\text{minor}}.
+$$
+
+The edge equation is exactly extended Bernoulli; classical Bernoulli is the
+special case with no losses and no unsteady term. Because the laws are explicit,
+each one is checked against an exact solution, not against itself: Poiseuille flow
+to 1e-16, the Windkessel transient to 0 Pa, the Starling waterfall to 2e-19 m³/s,
+and the lumped pulsatile edge against the exact Womersley impedance. The first
+real prediction: a lower-limb venous network with anatomical geometry predicts a
+**standing foot venous pressure of 88.7 mmHg**, inside the physiological
+**85–90 mmHg** range, with no parameter fitted to that range (supine: 8.4 mmHg vs
+5–10).
+
+<p align="center">
+  <img src="docs/img/vein_graph.png" width="620" alt="Lower-limb venous flow graph with predicted pressures and flows">
+</p>
+
+The derivation, the failure modes (viscosity, gravity, unsteady flow, collapse,
+valves), and the measured limits are in
+[`docs/bernoulli_veins.md`](docs/bernoulli_veins.md); the method ladder from
+lumped graphs to 1-D PDEs, CFD, surrogates and digital twins is in
+[`docs/prediction_methods.md`](docs/prediction_methods.md); the measured report is
+[`docs/validation_flow.md`](docs/validation_flow.md). Reproduce with
+`python scripts/validate_flow.py`.
+
 ## Quick start
 
 ```bash
@@ -124,6 +158,9 @@ python -m vh.molecular.run data/structures/1l2y_trpcage.pdb --ps 50 --temp 300
 # re-run the molecular / body validation reports
 python scripts/validate_molecular.py
 python scripts/validate_body.py
+
+# re-run the conserved-flow graph report: exact Poiseuille/Windkessel/Starling/Womersley + venous pressure
+python scripts/validate_flow.py
 ```
 
 ## Where the inputs come from
@@ -146,7 +183,7 @@ vh/molecular   energy.py (force field), integrate.py, minimize.py, prep.py, io.p
                periodic.py (Ewald/PME explicit solvent), constraints.py (SHAKE/RATTLE), explicit_md.py
 vh/body        physiology.py, partition.py, compound.py, pbpk.py
 vh/bridge      molecular → body coupling (Kd ↔ ΔG, receptor occupancy)
-vh/graph       core.py (typed property graph), algorithms.py, physiology_graph.py, render.py
+vh/graph       core.py (typed property graph), algorithms.py, flow.py (conserved-flow solver), physiology_graph.py, render.py
 tests/         pytest suite
 scripts/       validation report + figure generators
 docs/          accuracy_ladder, graph_formalization, feasibility, validation reports, architecture, roadmap
@@ -171,6 +208,7 @@ research tracks, and how to publish work under [`auto-research/`](auto-research/
 
 - **Rohan Arun** ([@rohanarun](https://github.com/rohanarun)) — creator and maintainer; direction and design.
 - **Claude** (Anthropic) — implemented and validated the engines under the above direction, in pair with the maintainer.
+- **OpenCode agent (DeepSeek V4.1 Flash Free)** — conserved-flow graph, vein model, Bernoulli derivation, and flow validation under the above direction.
 
 New contributors (human or agent): add yourself here in your pull request. See
 [`auto-research.md`](auto-research.md) for how to help.
