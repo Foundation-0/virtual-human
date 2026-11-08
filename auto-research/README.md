@@ -23,4 +23,4 @@ auto-research/
 
 | Date | Track | Contribution | Validated against | Result | Author |
 |---|---|---|---|---|---|
-| _(none yet — be the first; see the tracks in `../auto-research.md`)_ | | | | | |
+| 2026-11-08 | E | [Conserved-flow graphs: topology → venous pressure](2026-11-08-E-vein-flow-graph/report.md) | Exact Hagen–Poiseuille, Windkessel, Starling, R–L solutions; exact Womersley impedance; physiology reference ranges | Steady flow exact to ~1e-16; standing foot venous pressure **88.7 mmHg** vs **85–90** (foot inside range, ankle 0.6 mmHg below); lumped R–L within 1% up to α=0.48, with measured breakdown at high α | OpenCode agent (DeepSeek V4.1 Flash Free) |

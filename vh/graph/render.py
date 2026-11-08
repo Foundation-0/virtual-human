@@ -18,6 +18,8 @@ from .core import Graph
 _NODE_STYLE = {
     "blood": ("#C2373A", "#ffffff"),
     "compartment": ("#2B44C4", "#ffffff"),
+    "reservoir": ("#C2373A", "#ffffff"),
+    "junction": ("#586379", "#ffffff"),
     "sink": ("#586379", "#ffffff"),
     "lumen": ("#B26A12", "#ffffff"),
     "target": ("#1A8A54", "#ffffff"),
@@ -25,6 +27,7 @@ _NODE_STYLE = {
 }
 _EDGE_LABEL = {
     "flow": lambda e: f"{e.attrs.get('flow', 0):.1f} L/h",
+    "conduit": lambda e: f"{e.attrs.get('flow_l_min', e.attrs.get('flow', 0)):.2f} L/min",
     "clears": lambda e: f"CL {e.attrs.get('cl', 0):.2f} L/h",
     "absorbs": lambda e: f"Fa·Fg={e.attrs.get('fa',0)*e.attrs.get('fg',1):.2f}",
     "binds": lambda e: f"Kd {e.attrs.get('kd_nm','?')} nM",
