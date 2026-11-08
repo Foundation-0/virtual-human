@@ -8,8 +8,13 @@
   Laplacian, effective resistance, current flow), `vh/graph/render.py` (conduit
   labels/styles), `tests/test_flow.py`, `scripts/validate_flow.py`,
   `docs/bernoulli_veins.md`, `docs/prediction_methods.md`,
-  `docs/validation_flow.json`, `docs/img/womersley_vs_lumped.png`,
-  `docs/img/vein_pressure_profile.png`, `docs/img/vein_graph.png`.
+  `docs/validation_flow.md`, `docs/validation_flow.json`,
+  `docs/flow_explained.md`, `scripts/plot_flow_explainer.py`,
+  `docs/img/womersley_vs_lumped.png`,
+  `docs/img/vein_pressure_profile.png`, `docs/img/vein_graph.png`,
+  `docs/img/flow_explained_venous_pressure.png`,
+  `docs/img/flow_explained_terms.png`,
+  `docs/img/flow_explained_scorecard.png`.
 
 ## Question
 

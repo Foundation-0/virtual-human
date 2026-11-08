@@ -138,8 +138,9 @@ valves), and the measured limits are in
 [`docs/bernoulli_veins.md`](docs/bernoulli_veins.md); the method ladder from
 lumped graphs to 1-D PDEs, CFD, surrogates and digital twins is in
 [`docs/prediction_methods.md`](docs/prediction_methods.md); the measured report is
-[`docs/validation_flow.md`](docs/validation_flow.md). Reproduce with
-`python scripts/validate_flow.py`.
+[`docs/validation_flow.md`](docs/validation_flow.md). A plain-language walkthrough
+with charts is in [`docs/flow_explained.md`](docs/flow_explained.md). Reproduce
+with `python scripts/validate_flow.py`.
 
 ## Quick start
 

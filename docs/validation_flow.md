@@ -5,7 +5,8 @@
 Bernoulli kinetic term, Starling collapse and one-way valves. This page records
 what it was checked against and the measured error. The raw numbers are in
 [`validation_flow.json`](validation_flow.json); the derivation is in
-[`bernoulli_veins.md`](bernoulli_veins.md).
+[`bernoulli_veins.md`](bernoulli_veins.md); a plain-language walkthrough with
+charts is in [`flow_explained.md`](flow_explained.md).
 
 Reproduce all of it with:
 
