@@ -1,0 +1,5 @@
+name = "vh_formal"
+defaultTargets = ["FloatingSelectionAndCrushingGate"]
+
+[[lean_lib]]
+name = "FloatingSelectionAndCrushingGate"
