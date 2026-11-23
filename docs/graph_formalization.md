@@ -45,7 +45,56 @@ Built from scratch in `vh.graph.algorithms` and demonstrated in
 These are not approximations — they are the exact answers the graph structure
 determines.
 
-## Clearance reporting and independent verification
+## From topology to quantitative flow: constitutive laws on edges
+
+Topology alone cannot tell you the pressure in a vein. To predict *how much*
+flows, attach a constitutive law to every edge and a storage law to every node.
+That is what [`vh/graph/flow.py`](../vh/graph/flow.py) does. The graph becomes a
+lumped, 1-D Navier–Stokes solver:
+
+$$
+C_i\dot p_i=\sum_e B_{ie}q_e+s_i,\qquad
+L_e\dot q_e=p_{\text{src}}-p_{\text{dst}}-h_e-R_eq_e-\Delta p_{\text{kinetic}}-\Delta p_{\text{minor}},
+$$
+
+with $R=8\mu\ell/(\pi r^4)$, $L=\rho\ell/A$, $h=\rho g\Delta z$, a Bernoulli
+kinetic term, and optional Starling collapse and one-way valves. The edge
+equation is exactly the integrated momentum balance; rearranged, it is extended
+Bernoulli:
+
+$$
+p_1+\tfrac12\rho v_1^2+\rho g z_1
+=
+p_2+\tfrac12\rho v_2^2+\rho g z_2
++L\dot q+Rq+\Delta p_{\text{minor}}.
+$$
+
+This is validated against exact solutions, not against itself:
+
+| Check | Independent authority | Measured error |
+|---|---|---|
+| Poiseuille flow | $q=\Delta p/R$ | $1.6\times10^{-16}$ relative |
+| Windkessel transient | $qR(1-e^{-t/RC})$ | 0 Pa (matrix exponential) |
+| Starling waterfall | analytic waterfall law | $2.2\times10^{-19}$ m³/s |
+| Lumped R–L vs pulsatile flow | exact Womersley $Z(\omega)$ | <1% for $\alpha\le0.48$; 20.7% at $\alpha=5$ |
+| Standing venous pressure | physiology 85–90 mmHg | foot **88.7 mmHg** (inside range) |
+
+The same graph predicts the lower-limb venous pressure profile from anatomical
+geometry, without fitting the pressure reference:
+
+![lower-limb venous flow graph](img/vein_graph.png)
+
+The honest boundary moves, but does not disappear. A graph with a *validated
+constitutive law* on each edge can answer "how much flows" in the regime where
+that law holds. It cannot answer arbitrary continuum physics: the lumped R–L edge
+is a low-Womersley-number model, wave propagation needs a 1-D PDE rung, and local
+3-D wall shear needs CFD. The derivation, the failure modes, and the method
+ladder are in [`bernoulli_veins.md`](bernoulli_veins.md) and
+[`prediction_methods.md`](prediction_methods.md); the measured report is
+[`validation_flow.md`](validation_flow.md) and
+[`validation_flow.json`](validation_flow.json).
+
+## Partial verification — clearance reporting and independent verification
 
 Because the formalization is compositional, any subgraph can be pulled out and
 checked on its own:
@@ -166,7 +215,10 @@ molecules show up as its connected components.
 - *how much / how fast / how strong* — binding free energies, reaction rates,
   folding. Those are continuous physics, answered by `vh.quantum`,
   `vh.molecular`, `vh.body`, not by topology. A graph that *claimed* to settle
-  them by structure alone would be lying.
+  them by structure alone would be lying. The exception is when the edge carries
+  a validated constitutive law: then the graph is a solver, and the law — not
+  the topology — answers *how much*. `vh.graph.flow` does exactly that for 1-D
+  flow, with the regime of validity stated and measured.
 
 **Why the combination is the real answer.** The graph is where the scales meet:
 an edge labeled `binds` carries a `Kd` that a quantum free-energy calculation
@@ -182,6 +234,7 @@ physics a formal, inspectable, verifiable skeleton to hang on.
 
 ```bash
 python scripts/validate_graph.py     # runs every algorithm above, renders the diagrams
+python scripts/validate_flow.py      # flow graph vs exact Poiseuille/Windkessel/Starling/Womersley + venous pressure
 python scripts/validate_sbml.py      # SBML import against exact algebra and libRoadRunner
-pytest -q tests/test_graph.py tests/test_graph_clearance.py tests/test_sbml.py
+pytest -q tests/test_graph.py tests/test_graph_clearance.py tests/test_sbml.py tests/test_flow.py
 ```

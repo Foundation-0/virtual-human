@@ -284,3 +284,100 @@ def betweenness_centrality(g: Graph, edge_types: Iterable[str] | None = None) ->
             if w != s:
                 bc[w] += delta[w]
     return bc
+
+
+# ---------------------------------------------------------------------------
+# weighted flow networks: Laplacian, equivalent resistance, current flow
+# ---------------------------------------------------------------------------
+def weighted_laplacian(g: Graph, weight: str = "conductance",
+                       edge_types: Iterable[str] | None = None):
+    """Graph Laplacian for a resistive/conductive network.
+
+    Each edge contributes its ``weight`` (default: conductance, 1/R) to the
+    off-diagonal and to both diagonal entries.  Directed edges are treated as
+    symmetric conductors for the equivalent-resistance calculation.  Returns
+    ``(L, node_ids)``.
+    """
+    import numpy as np
+
+    nodes = list(g.nodes)
+    ix = {n: i for i, n in enumerate(nodes)}
+    L = np.zeros((len(nodes), len(nodes)))
+    types = set(edge_types) if edge_types is not None else None
+    for e in g.edges:
+        if types is not None and e.type not in types:
+            continue
+        c = float(e.attrs.get(weight, 0.0))
+        if c <= 0:
+            continue
+        i, j = ix[e.src], ix[e.dst]
+        if i == j:
+            continue
+        L[i, i] += c
+        L[j, j] += c
+        L[i, j] -= c
+        L[j, i] -= c
+    return L, nodes
+
+
+def effective_resistance(g: Graph, source: str, sink: str,
+                         weight: str = "conductance",
+                         edge_types: Iterable[str] | None = None) -> float:
+    """Equivalent resistance between two nodes, in the inverse units of ``weight``.
+
+    This is the graph-Laplacian answer to "what single resistor would replace
+    this whole vein network?":
+
+        R_eff = (e_s - e_t)^T L^+ (e_s - e_t).
+
+    For series edges R_eff = R1 + R2; for parallel edges
+    R_eff = R1 R2 / (R1 + R2).  It is computed from topology and the edge
+    conductances alone, without solving the flow field.
+    """
+    import numpy as np
+
+    if source not in g.nodes or sink not in g.nodes:
+        raise KeyError("source and sink must be graph nodes")
+    if source == sink:
+        return 0.0
+    comps = connected_components(g, edge_types)
+    if not any(source in c and sink in c for c in comps):
+        return float("inf")
+    L, nodes = weighted_laplacian(g, weight, edge_types)
+    ix = {n: i for i, n in enumerate(nodes)}
+    Lp = np.linalg.pinv(L)
+    i, j = ix[source], ix[sink]
+    r = Lp[i, i] + Lp[j, j] - 2.0 * Lp[i, j]
+    return float(max(r, 0.0))
+
+
+def current_flow(g: Graph, source: str, sink: str,
+                 weight: str = "conductance",
+                 edge_types: Iterable[str] | None = None) -> dict:
+    """Edge currents for unit injection at ``source`` and extraction at ``sink``.
+
+    Solves L p = e_source - e_sink, then i_e = conductance_e (p_src - p_dst).
+    The currents sum to 1 at the source.  Edges with the largest current are
+    the main flow paths -- a physically weighted bottleneck query, sharper
+    than unweighted betweenness for a flow network.
+    """
+    import numpy as np
+
+    if source not in g.nodes or sink not in g.nodes:
+        raise KeyError("source and sink must be graph nodes")
+    L, nodes = weighted_laplacian(g, weight, edge_types)
+    ix = {n: i for i, n in enumerate(nodes)}
+    b = np.zeros(len(nodes))
+    b[ix[source]] = 1.0
+    b[ix[sink]] = -1.0
+    p = np.linalg.pinv(L) @ b
+    out: dict = defaultdict(float)
+    types = set(edge_types) if edge_types is not None else None
+    for e in g.edges:
+        if types is not None and e.type not in types:
+            continue
+        c = float(e.attrs.get(weight, 0.0))
+        if c <= 0:
+            continue
+        out[e.key] += c * (p[ix[e.src]] - p[ix[e.dst]])
+    return dict(out)

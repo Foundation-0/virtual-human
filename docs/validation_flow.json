@@ -1,0 +1,316 @@
+{
+ "steady": {
+  "poiseuille": {
+   "q": 0.0006666666666666668,
+   "expected": 0.0006666666666666666,
+   "relerr": 1.6263032587282567e-16
+  },
+  "gravity": {
+   "q": 0.010395048999999998,
+   "expected": 0.010395048999999998,
+   "relerr": 0.0,
+   "head_1m_mmhg": 77.96926833932812
+  },
+  "bernoulli_stenosis": {
+   "p_up": 1328.1375377694949,
+   "expected": 1328.1375377694949,
+   "relerr": 0.0,
+   "kinetic_fraction": 0.984941318627596,
+   "bernoulli_residual_pa": 0.0
+  },
+  "starling": [
+   {
+    "p_up": 2000.0,
+    "p_down": 1000.0,
+    "p_ext": 500.0,
+    "q": 0.001,
+    "expected": 0.001,
+    "abs_error": 0.0,
+    "method": "active-set"
+   },
+   {
+    "p_up": 2000.0,
+    "p_down": 100.0,
+    "p_ext": 500.0,
+    "q": 0.0014999999999999998,
+    "expected": 0.0015,
+    "abs_error": 2.168404344971009e-19,
+    "method": "active-set"
+   },
+   {
+    "p_up": 400.0,
+    "p_down": 100.0,
+    "p_ext": 500.0,
+    "q": 0.0,
+    "expected": 0.0,
+    "abs_error": 0.0,
+    "method": "active-set"
+   },
+   {
+    "p_up": 400.0,
+    "p_down": 300.0,
+    "p_ext": 500.0,
+    "q": 0.0,
+    "expected": 0.0,
+    "abs_error": 0.0,
+    "method": "active-set"
+   }
+  ],
+  "starling_max_abs_error": 2.168404344971009e-19,
+  "effective_resistance": {
+   "series": 5000000.0,
+   "series_expected": 5000000.0,
+   "parallel": 999999.9999999998,
+   "parallel_expected": 1000000.0,
+   "max_abs_error": 2.3283064365386963e-10
+  }
+ },
+ "transient": {
+  "windkessel": {
+   "analytic_pa": 993.2620530009146,
+   "exact_pa": 993.2620530009146,
+   "exact_abs_error_pa": 0.0,
+   "exact_relerr": 0.0,
+   "implicit_euler": {
+    "0.002": {
+     "p": 992.9212420966343,
+     "abs_error": 0.3408109042803744
+    },
+    "0.001": {
+     "p": 993.0926238187132,
+     "abs_error": 0.1694291822014975
+    },
+    "0.0005": {
+     "p": 993.1775832725853,
+     "abs_error": 0.08446972832939537
+    }
+   },
+   "observed_order": 1.0082891120057382
+  },
+  "rl_step": {
+   "q": 9.932451983093531e-06,
+   "expected": 9.932620530009146e-06,
+   "relerr": 1.6969027972534326e-05,
+   "tau_s": 0.01
+  }
+ },
+ "womersley": {
+  "reference": "exact Womersley solution of the pulsatile Navier-Stokes equations",
+  "alpha_1pct": 0.48431254296349874,
+  "alpha_5pct": 1.0793956762933,
+  "table": [
+   {
+    "alpha": 0.1,
+    "relerr": 0.00041666603190673924
+   },
+   {
+    "alpha": 0.2,
+    "relerr": 0.0016666260431324894
+   },
+   {
+    "alpha": 0.5,
+    "relerr": 0.010406762256541332
+   },
+   {
+    "alpha": 1.0,
+    "relerr": 0.041045713834794606
+   },
+   {
+    "alpha": 2.0,
+    "relerr": 0.13645791023559004
+   },
+   {
+    "alpha": 5.0,
+    "relerr": 0.20712153009924988
+   }
+  ],
+  "examples": {
+   "vena_cava": {
+    "radius_m": 0.01,
+    "alpha_0p25hz": 6.897295756625181,
+    "relerr_0p25hz": 0.18186150759027214,
+    "alpha_1hz": 13.794591513250362,
+    "relerr_1hz": 0.11506727098725274
+   },
+   "femoral_vein": {
+    "radius_m": 0.005,
+    "alpha_0p25hz": 3.4486478783125905,
+    "relerr_0p25hz": 0.20891687266796685,
+    "alpha_1hz": 6.897295756625181,
+    "relerr_1hz": 0.18186150759027214
+   },
+   "small_vein": {
+    "radius_m": 0.002,
+    "alpha_0p25hz": 1.3794591513250363,
+    "relerr_0p25hz": 0.07523807173981138,
+    "alpha_1hz": 2.7589183026500725,
+    "relerr_1hz": 0.18885423439897828
+   },
+   "small_artery": {
+    "radius_m": 0.001,
+    "alpha_0p25hz": 0.6897295756625181,
+    "relerr_0p25hz": 0.019753954832953082,
+    "alpha_1hz": 1.3794591513250363,
+    "relerr_1hz": 0.07523807173981138
+   }
+  },
+  "large_vein_note": "At 1 Hz a 1 cm vena cava has alpha~14 and the lumped R+i\u03c9L edge has ~12% pulsatile-impedance error; a 5 mm femoral vein has alpha~6.9 and ~18% error. The steady pressure prediction does not use inertance and is unaffected. The R-L edge is exact in the steady limit and is a small-alpha approximation for pulsatility."
+ },
+ "vein_network": {
+  "geometry": {
+   "height_m": 1.75,
+   "heart_height_m": 1.05,
+   "ankle_height_m": 0.06,
+   "capillary_inflow_l_min": 0.5,
+   "note": "anatomical geometry, not fitted to the pressure reference"
+  },
+  "postures": {
+   "0": {
+    "pressure_mmhg": {
+     "ra": 5.0,
+     "ivc": 5.0204011731429175,
+     "iliac": 5.063386360999601,
+     "femoral": 5.19708748930903,
+     "popliteal": 5.38607271738292,
+     "calf": 5.688790510691706,
+     "ankle": 7.219570858090212,
+     "foot": 8.360487152997338,
+     "saphenous": 6.713950015894917
+    },
+    "flow_l_min": {
+     "foot_ankle": 0.5,
+     "ankle_calf": 0.46369544411142766,
+     "calf_popliteal": 0.46369544411142766,
+     "popliteal_femoral": 0.46369544411142766,
+     "femoral_iliac": 0.5,
+     "iliac_ivc": 0.5,
+     "ivc_ra": 0.5,
+     "ankle_saphenous": 0.03630455588857237,
+     "saphenous_femoral": 0.03630455588857237
+    },
+    "converged": true,
+    "residual": 8.526512829121202e-14
+   },
+   "30": {
+    "pressure_mmhg": {
+     "ra": 5.0,
+     "ivc": 8.918864590109326,
+     "iliac": 11.690774169842491,
+     "femoral": 16.89247774020825,
+     "popliteal": 27.607314194091433,
+     "calf": 34.92726613793975,
+     "ankle": 45.81435868605763,
+     "foot": 48.51466034775132,
+     "saphenous": 31.274269542783273
+    },
+    "flow_l_min": {
+     "foot_ankle": 0.5000000000000001,
+     "ankle_calf": 0.4636954441114277,
+     "calf_popliteal": 0.46369544411142755,
+     "popliteal_femoral": 0.46369544411142755,
+     "femoral_iliac": 0.49999999999999994,
+     "iliac_ivc": 0.49999999999999994,
+     "ivc_ra": 0.49999999999999994,
+     "ankle_saphenous": 0.03630455588857237,
+     "saphenous_femoral": 0.03630455588857237
+    },
+    "converged": true,
+    "residual": 5.115907697472721e-13
+   },
+   "60": {
+    "pressure_mmhg": {
+     "ra": 5.0,
+     "ivc": 11.772737882777308,
+     "iliac": 16.54235876737806,
+     "femoral": 25.454097618212195,
+     "popliteal": 43.874391962298944,
+     "calf": 56.33131583294963,
+     "ankle": 74.06770428347066,
+     "foot": 77.90955526223155,
+     "saphenous": 49.25367128659157
+    },
+    "flow_l_min": {
+     "foot_ankle": 0.5,
+     "ankle_calf": 0.4636954441114277,
+     "calf_popliteal": 0.46369544411142766,
+     "popliteal_femoral": 0.46369544411142766,
+     "femoral_iliac": 0.5,
+     "iliac_ivc": 0.5,
+     "ivc_ra": 0.5,
+     "ankle_saphenous": 0.0363045558885723,
+     "saphenous_femoral": 0.036304555888572315
+    },
+    "converged": true,
+    "residual": 4.298783551348606e-13
+   },
+   "90": {
+    "pressure_mmhg": {
+     "ra": 5.0,
+     "ivc": 12.817328007075739,
+     "iliac": 18.318161978685385,
+     "femoral": 28.587867991107473,
+     "popliteal": 49.82855567079996,
+     "calf": 64.16574176518782,
+     "ankle": 84.40914651402505,
+     "foot": 88.66883354250531,
+     "saphenous": 55.834589069671644
+    },
+    "flow_l_min": {
+     "foot_ankle": 0.5,
+     "ankle_calf": 0.46369544411142766,
+     "calf_popliteal": 0.46369544411142766,
+     "popliteal_femoral": 0.46369544411142766,
+     "femoral_iliac": 0.5,
+     "iliac_ivc": 0.5,
+     "ivc_ra": 0.5,
+     "ankle_saphenous": 0.0363045558885724,
+     "saphenous_femoral": 0.0363045558885724
+    },
+    "converged": true,
+    "residual": 1.1368683772161603e-12
+   }
+  },
+  "effective_resistance": {
+   "graph_laplacian": 53763380.4138048,
+   "solved_dp_over_q": 53763380.413804986,
+   "relerr": 3.4645238727449632e-15
+  },
+  "reference_ranges_mmhg": {
+   "supine_foot_ankle": [
+    5.0,
+    10.0
+   ],
+   "standing_foot_ankle": [
+    85.0,
+    90.0
+   ],
+   "source": "standard physiology (Guyton & Hall, venous pressure)"
+  },
+  "predictions": {
+   "foot_supine_mmhg": 8.360487152997338,
+   "foot_standing_mmhg": 88.66883354250531,
+   "ankle_supine_mmhg": 7.219570858090212,
+   "ankle_standing_mmhg": 84.40914651402505
+  },
+  "errors": {
+   "foot_supine_outside_range_mmhg": 0.0,
+   "foot_standing_outside_range_mmhg": 0.0,
+   "ankle_supine_outside_range_mmhg": 0.0,
+   "ankle_standing_outside_range_mmhg": 0.5908534859749466,
+   "hydrostatic_difference_mmhg": 80.30834638950797
+  },
+  "max_extended_bernoulli_residual_pa": 2.0463630789890885e-12,
+  "converged_all": true,
+  "max_residual": 1.1368683772161603e-12
+ },
+ "headline": {
+  "prediction": "standing foot venous pressure",
+  "standing_foot_mmhg": 88.66883354250531,
+  "reference_mmhg": [
+   85,
+   90
+  ],
+  "womersley_1pct_alpha": 0.48431254296349874,
+  "note": "The steady graph predicts the hydrostatic venous column inside the physiological reference range (foot 88.7 mmHg vs 85-90). Steady flow is exact against Hagen-Poiseuille and the Starling waterfall. The lumped R+i\u03c9L edge is within 1% only for alpha<=0.5; its measured breakdown at large-vein alpha is reported, not hidden."
+ }
+}
